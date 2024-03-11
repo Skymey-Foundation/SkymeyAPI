@@ -1,5 +1,6 @@
 
 using SkymeyUserService.Interfaces.Users.Auth;
+using SkymeyUserService.Interfaces.Users.Register;
 using SkymeyUserService.Middleware;
 using SkymeyUserService.Services.User.Auth;
 
@@ -18,6 +19,7 @@ namespace SkymeyUserService
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddTransient<IUserService, UserService>();
+            builder.Services.AddTransient<IUserServiceRegister, UserServiceRegister>();
 
             var app = builder.Build();
 

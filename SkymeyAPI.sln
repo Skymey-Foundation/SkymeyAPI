@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.34607.79
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkymeyAPI", "SkymeyAPI\SkymeyAPI.csproj", "{F3BA4496-2200-4372-B512-01C606335C95}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SkymeyAPI", "SkymeyAPI\SkymeyAPI.csproj", "{F3BA4496-2200-4372-B512-01C606335C95}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkymeyUserService", "SkymeyUserService\SkymeyUserService.csproj", "{A2051997-BCAC-4822-A524-7C2ECB07857F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SkymeyUserService", "SkymeyUserService\SkymeyUserService.csproj", "{A2051997-BCAC-4822-A524-7C2ECB07857F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkymeyLib", "SkymeyLib\SkymeyLib.csproj", "{9E9E9362-FE07-4E9F-B57C-7D1E7912472C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SkymeyLib", "SkymeyLib\SkymeyLib.csproj", "{9E9E9362-FE07-4E9F-B57C-7D1E7912472C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

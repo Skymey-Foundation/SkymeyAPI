@@ -1,4 +1,5 @@
 ﻿using SkymeyLib.Models.Users.Login;
+using SkymeyUserService.Data;
 using SkymeyUserService.Interfaces.Users.Auth;
 
 namespace SkymeyUserService.Services.User.Auth
@@ -12,8 +13,14 @@ namespace SkymeyUserService.Services.User.Auth
 
         public bool IsValidUserInformation(LoginModel model)
         {
-            if (model.Email.Equals("1") && model.Password.Equals("2")) return true;
-            else return false;
+            if (model.Email.Equals("1") && model.Password.Equals("2"))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using SkymeyLib.Models.Mongo.Config;
 using SkymeyLib.Models.Users.Login;
 using SkymeyLib.Models.Users.Register;
 using SkymeyUserService.Data;
@@ -24,14 +26,19 @@ namespace SkymeyUserService.Controllers
         private readonly IUserServiceRegister _userServiceRegister;
         private MongoClient _mongoClient;
         private ApplicationContext _db;
+        private readonly IOptions<MongoConfig> _options;
 
-        public UserController(IConfiguration configuration, IUserService userService, IUserServiceRegister userServiceRegister)
+        public UserController(IConfiguration configuration, 
+            IUserService userService, 
+            IUserServiceRegister userServiceRegister,
+            IOptions<MongoConfig> options)
         {
+            _options = options;
             _configuration = configuration;
             _userService = userService;
             _userServiceRegister = userServiceRegister;
-            _mongoClient = new MongoClient("mongodb://127.0.0.1:27017");
-            _db = ApplicationContext.Create(_mongoClient.GetDatabase("skymey"));
+            _mongoClient = new MongoClient(_options.Value.Server);
+            _db = ApplicationContext.Create(_mongoClient.GetDatabase(_options.Value.Database));
         }
 
         [HttpPost("Register")]

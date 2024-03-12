@@ -3,8 +3,10 @@ using Microsoft.Extensions.Configuration;
 using SkymeyLib.Models.Mongo.Config;
 using SkymeyUserService.Interfaces.Users.Auth;
 using SkymeyUserService.Interfaces.Users.Register;
+using SkymeyUserService.Interfaces.Users.TokenService;
 using SkymeyUserService.Middleware;
 using SkymeyUserService.Services.User.Auth;
+using SkymeyUserService.Services.User.TokenService;
 
 namespace SkymeyUserService
 {
@@ -23,6 +25,7 @@ namespace SkymeyUserService
             builder.Services.AddSwaggerGen();
             builder.Services.AddTransient<IUserService, UserService>();
             builder.Services.AddTransient<IUserServiceRegister, UserServiceRegister>();
+            builder.Services.AddTransient<ITokenService, TokenService>();
             var section = builder.Configuration.GetSection("MongoConfig");
             builder.Services.Configure<MongoConfig>(section);
 

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson;
@@ -10,8 +11,10 @@ using SkymeyLib.Models.Users.Register;
 using SkymeyUserService.Data;
 using SkymeyUserService.Interfaces.Users.Auth;
 using SkymeyUserService.Interfaces.Users.Register;
+using SkymeyUserService.Interfaces.Users.TokenService;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -27,11 +30,13 @@ namespace SkymeyUserService.Controllers
         private MongoClient _mongoClient;
         private ApplicationContext _db;
         private readonly IOptions<MongoConfig> _options;
+        private readonly ITokenService _tokenService;
 
         public UserController(IConfiguration configuration, 
             IUserService userService, 
             IUserServiceRegister userServiceRegister,
-            IOptions<MongoConfig> options)
+            IOptions<MongoConfig> options,
+            ITokenService tokenService)
         {
             _options = options;
             _configuration = configuration;
@@ -39,40 +44,49 @@ namespace SkymeyUserService.Controllers
             _userServiceRegister = userServiceRegister;
             _mongoClient = new MongoClient(_options.Value.Server);
             _db = ApplicationContext.Create(_mongoClient.GetDatabase(_options.Value.Database));
+            _tokenService = tokenService;
+            _tokenService.configuration(_configuration);
         }
 
         [HttpPost("Register")]
-        public async Task<string> Register(RegisterModel registerModel)
+        public async Task<IActionResult> Register(RegisterModel registerModel)
         {
             await using (ApplicationContext db = _db)
             {
                 bool isValid = await _userServiceRegister.IsValidUserInformation(registerModel, _db);
                 if (isValid)
                 {
+                    var refreshToken = _tokenService.GenerateRefreshToken();
                     await db.USR_001.AddAsync(new SkymeyLib.Models.Users.Table.USR_001
                     {
                         _id = ObjectId.GenerateNewId(),
                         Email = registerModel.Email,
-                        Password = registerModel.Password
+                        Password = registerModel.Password,
+                        RefreshToken = refreshToken,
+                        RefreshTokenExpiryTime = DateTime.Now.AddDays(7)
                     });
                     await db.SaveChangesAsync();
-                    return "ok";
+                    return Ok(new AuthenticatedResponse { Token = _tokenService.GenerateJwtToken(registerModel.Email), RefreshToken = _tokenService.GenerateRefreshToken() });
                 }
                 else {
-                    return "not ok";
+                    return BadRequest("User already exist");
                 }
             }
         }
 
         [AllowAnonymous]
         [HttpPost("Login")]
-        public IActionResult Login(LoginModel loginData)
+        public async Task<IActionResult> Login(LoginModel loginData)
         {
-            bool isValid = _userService.IsValidUserInformation(loginData);
+            bool isValid = await _userService.IsValidUserInformation(loginData, _db);
             if (isValid)
             {
-                var tokenString = GenerateJwtToken(loginData.Email);
-                return Ok(new { Token = tokenString, Message = "Success" });
+                var user = await _db.USR_001.Where(x=>x.Email==loginData.Email).FirstOrDefaultAsync();
+                var refreshToken = _tokenService.GenerateRefreshToken();
+                user.RefreshToken = refreshToken;
+                user.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
+                await _db.SaveChangesAsync();
+                return Ok(new AuthenticatedResponse{ Token = _tokenService.GenerateJwtToken(loginData.Email), RefreshToken = refreshToken });
             }
             return BadRequest("Please pass the valid Email and Password");
         }
@@ -82,22 +96,6 @@ namespace SkymeyUserService.Controllers
         public IActionResult GetResult()
         {
             return Ok("API Validated");
-        }
-
-        private string GenerateJwtToken(string userName)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:key"]);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[] { new Claim("id", userName) }),
-                Expires = DateTime.UtcNow.AddHours(1),
-                Issuer = _configuration["Jwt:Issuer"],
-                Audience = _configuration["Jwt:Audience"],
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
         }
     }
 }

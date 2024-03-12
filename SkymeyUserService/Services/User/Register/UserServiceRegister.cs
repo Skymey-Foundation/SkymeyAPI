@@ -11,8 +11,6 @@ namespace SkymeyUserService.Services.User.Auth
     {
         public async Task <bool> IsValidUserInformation(RegisterModel registerModel, ApplicationContext _db)
         {
-            ApplicationContext db = _db;
-
             if (await _db.USR_001.Where(x => x.Email == registerModel.Email).FirstOrDefaultAsync() == null)
             {
                 return true;

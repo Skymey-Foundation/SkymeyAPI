@@ -1,4 +1,6 @@
-﻿using SkymeyLib.Models.Users.Login;
+﻿using Microsoft.EntityFrameworkCore;
+using SkymeyLib.Models.Users.Login;
+using SkymeyLib.Models.Users.Register;
 using SkymeyUserService.Data;
 using SkymeyUserService.Interfaces.Users.Auth;
 
@@ -11,9 +13,9 @@ namespace SkymeyUserService.Services.User.Auth
             return "ok";
         }
 
-        public bool IsValidUserInformation(LoginModel model)
+        public async Task<bool> IsValidUserInformation(LoginModel model, ApplicationContext _db)
         {
-            if (model.Email.Equals("1") && model.Password.Equals("2"))
+            if (await _db.USR_001.Where(x => x.Email == model.Email && x.Password == model.Password).FirstOrDefaultAsync() != null)
             {
                 return true;
             }

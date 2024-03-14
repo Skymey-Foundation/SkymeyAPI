@@ -1,6 +1,7 @@
 
 using Microsoft.Extensions.Configuration;
 using SkymeyLib.Models.Mongo.Config;
+using SkymeyUserService.Data;
 using SkymeyUserService.Interfaces.Users.Auth;
 using SkymeyUserService.Interfaces.Users.Register;
 using SkymeyUserService.Interfaces.Users.TokenService;

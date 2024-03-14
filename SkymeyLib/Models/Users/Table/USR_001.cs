@@ -14,10 +14,24 @@ namespace SkymeyLib.Models.Users.Table
     {
         [BsonId(IdGenerator = typeof(ObjectIdGenerator))]
         [JsonPropertyName("_id")]
+        [BsonElement("_id")]
         public ObjectId? _id { get; set; }
+        [JsonPropertyName("Email")]
+        [BsonElement("Email")]
         public string Email {  get; set; }
+        [JsonPropertyName("Password")]
+        [BsonElement("Password")]
         public string Password { get; set; }
+        [JsonPropertyName("RefreshToken")]
+        [BsonElement("RefreshToken")]
         public string? RefreshToken { get; set; }
+        [JsonPropertyName("RefreshTokenExpiryTime")]
+        [BsonElement("RefreshTokenExpiryTime")]
         public DateTime RefreshTokenExpiryTime { get; set; }
+        public USR_001()
+        {
+            _id = ObjectId.GenerateNewId();
+        }
     }
+
 }

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
 using SkymeyLib.Models.Users.Login;
+using SkymeyLib.Enums.Users;
+using SkymeyLib.Enums;
 
 namespace SkymeyUserService.Middleware
 {
@@ -13,7 +15,7 @@ namespace SkymeyUserService.Middleware
             if (account == null)
             {
                 // not logged in
-                context.Result = new JsonResult(new { message = "Unauthorized" }) { StatusCode = StatusCodes.Status401Unauthorized };
+                context.Result = new JsonResult(new { message = UserLogin.Unauthorized.StringValue() }) { StatusCode = StatusCodes.Status401Unauthorized };
             }
         }
     }

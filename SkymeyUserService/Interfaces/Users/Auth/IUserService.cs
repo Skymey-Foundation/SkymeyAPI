@@ -1,11 +1,12 @@
 ﻿using SkymeyLib.Models.Users.Login;
 using SkymeyUserService.Data;
+using SkymeyUserService.Services.User;
 
 namespace SkymeyUserService.Interfaces.Users.Auth
 {
     public interface IUserService
     {
-        Task <bool> IsValidUserInformation(LoginModel model, ApplicationContext db);
+        Task <UserResponse> IsValidUserInformation(LoginModel model, ApplicationContext db);
 
         string GetUserDetails();
     }

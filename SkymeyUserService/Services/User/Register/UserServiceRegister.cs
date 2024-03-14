@@ -14,9 +14,9 @@ namespace SkymeyUserService.Services.User.Auth
 {
     public class UserServiceRegister : IUserServiceRegister
     {
-        private readonly UserResponse _userResponse = new UserResponse();
-        private ApplicationContext _db;
-        private ITokenService _tokenService;
+        private UserResponse _userResponse = new UserResponse();
+        ApplicationContext _db;
+        ITokenService _tokenService;
         public void UserServiceRegisterInit(ApplicationContext db,
             ITokenService tokenService)
         {
@@ -24,12 +24,12 @@ namespace SkymeyUserService.Services.User.Auth
             _db = db;
         }
 
-        public async Task <UserResponse> IsValidUserInformation(RegisterModel registerModel)
+        public async Task<UserResponse> IsValidUserInformation(RegisterModel registerModel)
         {
             if (await _db.USR_001.Where(x => x.Email == registerModel.Email).FirstOrDefaultAsync() == null)
             {
                 _userResponse.ResponseType = true;
-                _userResponse.Response = "Ok";
+                _userResponse.Response = UserRegister.Ok.StringValue();
                 return _userResponse;
             }
             else
@@ -42,24 +42,21 @@ namespace SkymeyUserService.Services.User.Auth
 
         public async Task<IUserResponse> Register(RegisterModel registerModel)
         {
-            await using (ApplicationContext db = _db)
+            _userResponse = await IsValidUserInformation(registerModel);
+            if (_userResponse.ResponseType)
             {
-                UserResponse userRegisterResponse = await IsValidUserInformation(registerModel);
-                if (userRegisterResponse.ResponseType)
+                var refreshToken = _tokenService.GenerateRefreshToken();
+                await _db.USR_001.AddAsync(new USR_001
                 {
-                    var refreshToken = _tokenService.GenerateRefreshToken();
-                    await db.USR_001.AddAsync(new USR_001
-                    {
-                        Email = registerModel.Email,
-                        Password = registerModel.Password,
-                        RefreshToken = refreshToken,
-                        RefreshTokenExpiryTime = DateTime.Now.AddDays(7)
-                    });
-                    await db.SaveChangesAsync();
-                    userRegisterResponse.AuthenticatedResponses = new AuthenticatedResponse { Token = _tokenService.GenerateJwtToken(registerModel.Email), RefreshToken = _tokenService.GenerateRefreshToken() };
-                }
-                return userRegisterResponse;
+                    Email = registerModel.Email,
+                    Password = registerModel.Password,
+                    RefreshToken = refreshToken,
+                    RefreshTokenExpiryTime = DateTime.Now.AddDays(7)
+                });
+                await _db.SaveChangesAsync();
+                _userResponse.AuthenticatedResponses = new AuthenticatedResponse { Token = _tokenService.GenerateJwtToken(registerModel.Email), RefreshToken = refreshToken };
             }
+            return _userResponse;
         }
     }
 }

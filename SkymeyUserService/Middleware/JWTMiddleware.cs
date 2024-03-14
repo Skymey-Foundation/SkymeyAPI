@@ -9,9 +9,9 @@ namespace SkymeyUserService.Middleware
     {
         private readonly RequestDelegate _next;
         private readonly IConfiguration _configuration;
-        private readonly IUserService _userService;
+        private readonly IUserServiceLogin _userService;
 
-        public JWTMiddleware(RequestDelegate next, IConfiguration configuration, IUserService userService)
+        public JWTMiddleware(RequestDelegate next, IConfiguration configuration, IUserServiceLogin userService)
         {
             _next = next;
             _configuration = configuration;
@@ -48,7 +48,7 @@ namespace SkymeyUserService.Middleware
                 var accountId = jwtToken.Claims.First(x => x.Type == "id").Value;
 
                 // attach account to context on successful jwt validation
-                context.Items["User"] = _userService.GetUserDetails();
+                //context.Items["User"] = _userService.GetUserDetails();//TODO
             }
             catch
             {

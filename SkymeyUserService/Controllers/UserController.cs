@@ -29,15 +29,15 @@ namespace SkymeyUserService.Controllers
     public class UserController : Controller
     {
         private readonly IConfiguration _configuration;
-        private readonly IUserService _userService;
+        private readonly IUserServiceLogin _userService;
         private readonly IUserServiceRegister _userServiceRegister;
         private MongoClient _mongoClient;
         private ApplicationContext _db;
         private readonly IOptions<MongoConfig> _options;
         private readonly ITokenService _tokenService;
 
-        public UserController(IConfiguration configuration, 
-            IUserService userService, 
+        public UserController(IConfiguration configuration,
+            IUserServiceLogin userService, 
             IUserServiceRegister userServiceRegister,
             IOptions<MongoConfig> options,
             ITokenService tokenService)
@@ -51,30 +51,36 @@ namespace SkymeyUserService.Controllers
             _tokenService = tokenService;
             _tokenService.configuration(_configuration);
             userServiceRegister.UserServiceRegisterInit(_db, _tokenService);
+            _userService.UserServiceLoginInit(_db, _tokenService);
         }
 
         [HttpPost("Register")]
-        public async Task<IUserResponse> Register(RegisterModel registerModel)
+        public async Task<IActionResult> Register(RegisterModel registerModel)
         {
-            //return _userServiceRegister(_db).Register(registerModel);
-            return await _userServiceRegister.Register(registerModel);
+            IUserResponse resp = await _userServiceRegister.Register(registerModel);
+            if (resp.ResponseType)
+            {
+                return Ok(resp);
+            }
+            else
+            {
+                return BadRequest(resp);
+            }
         }
 
         [AllowAnonymous]
         [HttpPost("Login")]
         public async Task<IActionResult> Login(LoginModel loginData)
         {
-            UserResponse userLoginRequest = await _userService.IsValidUserInformation(loginData, _db);
-            if (userLoginRequest.ResponseType)
+            IUserResponse resp = await _userService.Login(loginData);
+            if (resp.ResponseType)
             {
-                var user = await _db.USR_001.Where(x=>x.Email==loginData.Email).FirstOrDefaultAsync();
-                var refreshToken = _tokenService.GenerateRefreshToken();
-                user.RefreshToken = refreshToken;
-                user.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
-                await _db.SaveChangesAsync();
-                return Ok(new AuthenticatedResponse{ Token = _tokenService.GenerateJwtToken(loginData.Email), RefreshToken = refreshToken });
+                return Ok(resp);
             }
-            return BadRequest(userLoginRequest.Response);
+            else
+            {
+                return BadRequest(resp);
+            }
         }
 
         [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]

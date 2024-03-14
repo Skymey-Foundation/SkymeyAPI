@@ -1,5 +1,6 @@
 
 using Microsoft.Extensions.Configuration;
+using SkymeyLib.Models;
 using SkymeyLib.Models.Mongo.Config;
 using SkymeyUserService.Data;
 using SkymeyUserService.Interfaces.Users.Auth;
@@ -18,13 +19,12 @@ namespace SkymeyUserService
             var builder = WebApplication.CreateBuilder(args);
             // Add services to the container.
             var sectionpath = builder.Configuration.GetSection("Config");
-            var weatherClientConfig = sectionpath.Get<SkymeyLib.Models.Config>();
-            builder.Configuration.AddJsonFile(weatherClientConfig.Path);
+            builder.Configuration.AddJsonFile(sectionpath.Get<Config>().Path);
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            builder.Services.AddTransient<IUserService, UserService>();
+            builder.Services.AddTransient<IUserServiceLogin, UserServiceLogin>();
             builder.Services.AddTransient<IUserServiceRegister, UserServiceRegister>();
             builder.Services.AddTransient<ITokenService, TokenService>();
             var section = builder.Configuration.GetSection("MongoConfig");

@@ -20,7 +20,7 @@ namespace SkymeyUserService.Middleware
 
         public async Task Invoke(HttpContext context)
         {
-            var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            var token = context.Request.Headers["Authorization: Bearer"].FirstOrDefault()?.Split(" ").Last();
 
             if (token != null)
                 attachAccountToContext(context, token);
@@ -43,7 +43,6 @@ namespace SkymeyUserService.Middleware
                     // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
                     ClockSkew = TimeSpan.Zero
                 }, out SecurityToken validatedToken);
-
                 var jwtToken = (JwtSecurityToken)validatedToken;
                 var accountId = jwtToken.Claims.First(x => x.Type == "id").Value;
 

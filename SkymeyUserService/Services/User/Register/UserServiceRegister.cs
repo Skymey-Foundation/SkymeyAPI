@@ -6,7 +6,6 @@ using SkymeyLib.Models.Users.Login;
 using SkymeyLib.Models.Users.Register;
 using SkymeyLib.Models.Users.Table;
 using SkymeyUserService.Data;
-using SkymeyUserService.Interfaces.Users.Auth;
 using SkymeyUserService.Interfaces.Users.Register;
 using SkymeyUserService.Interfaces.Users.TokenService;
 

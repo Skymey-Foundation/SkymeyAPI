@@ -2,7 +2,6 @@
 using SkymeyLib.Enums;
 using SkymeyLib.Enums.Users;
 using SkymeyLib.Models.Users.Login;
-using SkymeyLib.Models.Users.Register;
 using SkymeyLib.Models.Users.Table;
 using SkymeyUserService.Data;
 using SkymeyUserService.Interfaces.Users.Auth;
@@ -48,11 +47,12 @@ namespace SkymeyUserService.Services.User.Auth
             {
                 var refreshToken = _tokenService.GenerateRefreshToken();
                 _USR_001.RefreshToken = refreshToken;
-                _USR_001.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
+                _USR_001.RefreshTokenExpiryTime = DateTime.Now.AddMinutes(1);
                 await _db.SaveChangesAsync();
                 _userResponse.AuthenticatedResponses = new AuthenticatedResponse { Token = _tokenService.GenerateJwtToken(loginModel.Email), RefreshToken = refreshToken };
             }
             return _userResponse;
         }
+
     }
 }

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -54,6 +55,7 @@ namespace SkymeyUserService.Controllers
             _userService.UserServiceLoginInit(_db, _tokenService);
         }
 
+        [AllowAnonymous]
         [HttpPost("Register")]
         public async Task<IActionResult> Register(RegisterModel registerModel)
         {
@@ -83,11 +85,19 @@ namespace SkymeyUserService.Controllers
             }
         }
 
-        [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
-        [HttpGet(nameof(GetResult))]
+        [HttpGet,Authorize,Route("GetResult")]
         public IActionResult GetResult()
         {
             return Ok("API Validated");
+        }
+
+        [Authorize]
+        //[Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet(nameof(ValidateToken))]
+        public Claim ValidateToken(string token)
+        {
+            var resp = _tokenService.GetPrincipalFromExpiredToken(token).Claims.FirstOrDefault();
+            return resp;
         }
     }
 }

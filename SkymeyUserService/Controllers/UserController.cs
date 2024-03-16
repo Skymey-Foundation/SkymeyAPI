@@ -32,27 +32,20 @@ namespace SkymeyUserService.Controllers
         private readonly IConfiguration _configuration;
         private readonly IUserServiceLogin _userService;
         private readonly IUserServiceRegister _userServiceRegister;
-        private MongoClient _mongoClient;
-        private ApplicationContext _db;
-        private readonly IOptions<MongoConfig> _options;
         private readonly ITokenService _tokenService;
 
         public UserController(IConfiguration configuration,
             IUserServiceLogin userService, 
             IUserServiceRegister userServiceRegister,
-            IOptions<MongoConfig> options,
             ITokenService tokenService)
         {
-            _options = options;
             _configuration = configuration;
             _userService = userService;
             _userServiceRegister = userServiceRegister;
-            _mongoClient = new MongoClient(_options.Value.Server);
-            _db = ApplicationContext.Create(_mongoClient.GetDatabase(_options.Value.Database));
             _tokenService = tokenService;
             _tokenService.configuration(_configuration);
-            userServiceRegister.UserServiceRegisterInit(_db, _tokenService);
-            _userService.UserServiceLoginInit(_db, _tokenService);
+            userServiceRegister.UserServiceRegisterInit(_tokenService);
+            _userService.UserServiceLoginInit(_tokenService);
         }
 
         [AllowAnonymous]

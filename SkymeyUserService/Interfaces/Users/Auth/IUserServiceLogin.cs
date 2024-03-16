@@ -9,8 +9,8 @@ namespace SkymeyUserService.Interfaces.Users.Auth
 {
     public interface IUserServiceLogin
     {
-        void UserServiceLoginInit(ApplicationContext db, ITokenService tokenService);
-        Task <UserResponse> IsValidUserInformation(LoginModel model, ApplicationContext db);
+        void UserServiceLoginInit(ITokenService _tokenService);
+        Task <UserResponse> IsValidUserInformation(LoginModel model);
         Task<UserResponse> Login(LoginModel loginModel);
     }
 }

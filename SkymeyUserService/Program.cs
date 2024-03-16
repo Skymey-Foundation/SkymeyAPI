@@ -1,8 +1,10 @@
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MongoDB.Driver;
 using SkymeyLib.Models;
 using SkymeyLib.Models.Mongo.Config;
 using SkymeyUserService.Data;
@@ -14,6 +16,7 @@ using SkymeyUserService.Services.User.Auth;
 using SkymeyUserService.Services.User.TokenService;
 using System.Text;
 using System.Text.Json.Serialization;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace SkymeyUserService
 {
@@ -29,16 +32,11 @@ namespace SkymeyUserService
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            
+
             builder.Services.AddTransient<IUserServiceLogin, UserServiceLogin>();
             builder.Services.AddTransient<IUserServiceRegister, UserServiceRegister>();
             builder.Services.AddTransient<ITokenService, TokenService>();
-            var section = builder.Configuration.GetSection("MongoConfig");
-            builder.Services.Configure<MongoConfig>(section);
-            
-            Console.WriteLine(builder.Configuration.GetValue<string>("JWT:Audience"));
-            Console.WriteLine(builder.Configuration.GetValue<string>("JWT:Issuer"));
-            Console.WriteLine(builder.Configuration.GetValue<string>("JWT:Key"));
+
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {

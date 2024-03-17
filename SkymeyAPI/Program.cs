@@ -4,10 +4,16 @@ using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using SkymeyLib.Interfaces.ICrypto;
+using SkymeyLib.Interfaces.IServers;
+using SkymeyLib.Interfaces.IUsers;
+using SkymeyLib.Models;
+using SkymeyLib.Models.ServersSettings;
 using SkymeyUserService.Interfaces.Users.Login;
 using SkymeyUserService.Middleware;
 using SkymeyUserService.Services.User.Login;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace SkymeyAPI
 {
@@ -18,7 +24,14 @@ namespace SkymeyAPI
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddControllers();
+            builder.Configuration.AddJsonFile(builder.Configuration.GetSection("Config").Get<Config>().Path);
 
+            builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+            
+            builder.Services.AddSingleton<IUsers, Users>();
+            builder.Services.AddSingleton<ICrypto, Crypto>();
+            builder.Services.AddSingleton<IServers, Servers>();
+            
             #region JWT
             builder.Services.AddAuthorization();
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

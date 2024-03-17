@@ -8,6 +8,6 @@ namespace SkymeyLib.Models
 {
     public class Config
     {
-        public string Path { get; set; }
+        public required string Path { get; set; }
     }
 }

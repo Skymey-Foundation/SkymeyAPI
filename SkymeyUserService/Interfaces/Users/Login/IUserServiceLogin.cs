@@ -5,11 +5,10 @@ using SkymeyUserService.Interfaces.Users.Register;
 using SkymeyUserService.Interfaces.Users.TokenService;
 using SkymeyUserService.Services.User;
 
-namespace SkymeyUserService.Interfaces.Users.Auth
+namespace SkymeyUserService.Interfaces.Users.Login
 {
     public interface IUserServiceLogin
     {
-        void UserServiceLoginInit(ITokenService _tokenService);
         Task <UserResponse> IsValidUserInformation(LoginModel model);
         Task<UserResponse> Login(LoginModel loginModel);
     }

@@ -11,7 +11,7 @@ namespace SkymeyUserService.Middleware
     {
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            var account = (LoginModel)context.HttpContext.Items["User"];
+            var account = (LoginModel?)context.HttpContext.Items["User"];
             if (account == null)
             {
                 // not logged in

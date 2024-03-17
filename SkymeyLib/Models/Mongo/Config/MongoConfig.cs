@@ -8,7 +8,7 @@ namespace SkymeyLib.Models.Mongo.Config
 {
     public class MongoConfig
     {
-        public string Server {  get; set; }
-        public string Database { get; set; }
+        public string? Server {  get; set; }
+        public string? Database { get; set; }
     }
 }

@@ -4,18 +4,18 @@ using SkymeyLib.Enums.Users;
 using SkymeyLib.Models.Users.Login;
 using SkymeyLib.Models.Users.Table;
 using SkymeyUserService.Data;
-using SkymeyUserService.Interfaces.Users.Auth;
+using SkymeyUserService.Interfaces.Users.Login;
 using SkymeyUserService.Interfaces.Users.TokenService;
 
-namespace SkymeyUserService.Services.User.Auth
+namespace SkymeyUserService.Services.User.Login
 {
-    public class UserServiceLogin : IUserServiceLogin
+    public class UserServiceLogin : IUserServiceLogin, IDisposable
     {
-        private UserResponse _userResponse = new UserResponse();
+        private UserResponse _userResponse = new UserResponse() { AuthenticatedResponses = new AuthenticatedResponse() { } };
         private USR_001? _USR_001;
         ITokenService _tokenService;
 
-        public void UserServiceLoginInit(ITokenService tokenService)
+        public UserServiceLogin(ITokenService tokenService)
         {
             _tokenService = tokenService;
         }
@@ -42,19 +42,34 @@ namespace SkymeyUserService.Services.User.Auth
 
         public async Task<UserResponse> Login(LoginModel loginModel)
         {
-            await using (ApplicationContext _db = new ApplicationContext())
+            _userResponse = await IsValidUserInformation(loginModel);
+            if (_userResponse.ResponseType)
             {
-                _userResponse = await IsValidUserInformation(loginModel);
-                if (_userResponse.ResponseType)
+                await using (ApplicationContext _db = new ApplicationContext())
                 {
-                    var refreshToken = _tokenService.GenerateRefreshToken();
-                    _USR_001.RefreshToken = refreshToken;
-                    _USR_001.RefreshTokenExpiryTime = DateTime.Now.AddMinutes(20);
-                    await _db.SaveChangesAsync();
-                    _userResponse.AuthenticatedResponses = new AuthenticatedResponse { Token = _tokenService.GenerateJwtToken(loginModel.Email), RefreshToken = refreshToken };
+                    if (_USR_001 != null)
+                    {
+                        var refreshToken = _tokenService.GenerateRefreshToken();
+                        _USR_001.RefreshToken = refreshToken;
+                        _USR_001.RefreshTokenExpiryTime = DateTime.Now.AddMinutes(20);
+                        await _db.SaveChangesAsync();
+                        _userResponse.AuthenticatedResponses = new AuthenticatedResponse { Token = _tokenService.GenerateJwtToken(loginModel.Email), RefreshToken = refreshToken };
+                    }
                 }
-                return _userResponse;
             }
+            return _userResponse;
         }
+
+        #region Dispose, Ctor
+        public void Dispose()
+        {
+            _USR_001 = null;
+            _userResponse.Dispose();
+        }
+        ~UserServiceLogin()
+        {
+
+        }
+        #endregion
     }
 }

@@ -7,33 +7,38 @@ using System.Text;
 
 namespace SkymeyUserService.Services.User.TokenService
 {
-    public class TokenService : ITokenService
+    public class TokenService : ITokenService, IDisposable
     {
         private IConfiguration _configuration;
-        IConfiguration ITokenService.configuration(IConfiguration _config)
+        private byte[]? _key;
+        private string? _Issuer;
+        private string? _Audience;
+        public TokenService(IConfiguration configuration)
         {
-            _configuration = _config;
-            return _configuration;
+            _configuration = configuration;
+            _key = Encoding.ASCII.GetBytes(_configuration["Jwt:key"]);
+            _Issuer = _configuration["Jwt:Issuer"];
+            _Audience = _configuration["Jwt:Audience"];
         }
+
         public string GenerateJwtToken(string userName)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:key"]);
-            var tokenDescriptor = new SecurityTokenDescriptor
+            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+            SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[] { new Claim("id", userName) }),
                 Expires = DateTime.UtcNow.AddMinutes(5),
-                Issuer = _configuration["Jwt:Issuer"],
-                Audience = _configuration["Jwt:Audience"],
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                Issuer = _Issuer,
+                Audience = _Audience,
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(_key), SecurityAlgorithms.HmacSha256Signature)
             };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
+            SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
         public string GenerateRefreshToken()
         {
-            var randomNumber = new byte[32];
-            using (var rng = RandomNumberGenerator.Create())
+            byte[]? randomNumber = new byte[32];
+            using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
             {
                 rng.GetBytes(randomNumber);
                 return Convert.ToBase64String(randomNumber);
@@ -41,21 +46,26 @@ namespace SkymeyUserService.Services.User.TokenService
         }
         public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
         {
-            var tokenValidationParameters = new TokenValidationParameters
+            TokenValidationParameters tokenValidationParameters = new TokenValidationParameters
             {
                 ValidateAudience = false, //you might want to validate the audience and issuer depending on your use case
                 ValidateIssuer = false,
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["Jwt:key"])),
+                IssuerSigningKey = new SymmetricSecurityKey(_key),
                 ValidateLifetime = true //here we are saying that we don't care about the token's expiration date
             };
-            var tokenHandler = new JwtSecurityTokenHandler();
+            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
             SecurityToken securityToken;
-            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);
-            var jwtSecurityToken = securityToken as JwtSecurityToken;
+            ClaimsPrincipal principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);
+            JwtSecurityToken? jwtSecurityToken = securityToken as JwtSecurityToken;
             if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
                 throw new SecurityTokenException("Invalid token");
             return principal;
+        }
+
+        public void Dispose()
+        {
+
         }
     }
 }

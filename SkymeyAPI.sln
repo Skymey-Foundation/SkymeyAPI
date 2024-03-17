@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SkymeyUserService", "Skymey
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SkymeyLib", "SkymeyLib\SkymeyLib.csproj", "{9E9E9362-FE07-4E9F-B57C-7D1E7912472C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Skymey", "Skymey\Skymey.csproj", "{D453CA9F-B2CA-4E1B-87EB-F12E08092C01}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{9E9E9362-FE07-4E9F-B57C-7D1E7912472C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9E9E9362-FE07-4E9F-B57C-7D1E7912472C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9E9E9362-FE07-4E9F-B57C-7D1E7912472C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D453CA9F-B2CA-4E1B-87EB-F12E08092C01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D453CA9F-B2CA-4E1B-87EB-F12E08092C01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D453CA9F-B2CA-4E1B-87EB-F12E08092C01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D453CA9F-B2CA-4E1B-87EB-F12E08092C01}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -8,12 +8,13 @@ using MongoDB.Driver;
 using SkymeyLib.Models;
 using SkymeyLib.Models.Mongo.Config;
 using SkymeyUserService.Data;
-using SkymeyUserService.Interfaces.Users.Auth;
+using SkymeyUserService.Interfaces.Users.Login;
 using SkymeyUserService.Interfaces.Users.Register;
 using SkymeyUserService.Interfaces.Users.TokenService;
-using SkymeyUserService.Middleware;
-using SkymeyUserService.Services.User.Auth;
+using SkymeyUserService.Services.User.Login;
+using SkymeyUserService.Services.User.Register;
 using SkymeyUserService.Services.User.TokenService;
+using SkymeyUserService.Middleware;
 using System.Text;
 using System.Text.Json.Serialization;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
@@ -25,18 +26,16 @@ namespace SkymeyUserService
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            // Add services to the container.
-            var sectionpath = builder.Configuration.GetSection("Config");
-            builder.Configuration.AddJsonFile(sectionpath.Get<Config>().Path);
-            builder.Services.AddControllers().AddJsonOptions(x =>
-                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+           
+            builder.Configuration.AddJsonFile(builder.Configuration.GetSection("Config").Get<Config>().Path);
+            
+            builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
-            builder.Services.AddTransient<IUserServiceLogin, UserServiceLogin>();
-            builder.Services.AddTransient<IUserServiceRegister, UserServiceRegister>();
-            builder.Services.AddTransient<ITokenService, TokenService>();
+            builder.Services.AddSingleton<ITokenService, TokenService>();
+            builder.Services.AddScoped<IUserServiceLogin, UserServiceLogin>();
+            builder.Services.AddScoped<IUserServiceRegister, UserServiceRegister>();
 
+            #region JWT
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -52,6 +51,7 @@ namespace SkymeyUserService
                     };
                 });
             builder.Services.AddAuthorization();
+            #endregion
             #region Swagger Configuration
             builder.Services.AddSwaggerGen(swagger =>
             {
@@ -59,8 +59,8 @@ namespace SkymeyUserService
                 swagger.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "JWT Token Authentication API",
-                    Description = "ASP.NET Core 5.0 Web API"
+                    Title = "Skymey API",
+                    Description = ".NET 8.0 Web API"
                 });
                 // To Enable authorization using Swagger (JWT)
                 swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
@@ -70,7 +70,7 @@ namespace SkymeyUserService
                     Scheme = "Bearer",
                     BearerFormat = "JWT",
                     In = ParameterLocation.Header,
-                    Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\"",
+                    Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter your token in the text input below:",
                 });
                 swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
@@ -88,14 +88,11 @@ namespace SkymeyUserService
                 });
             });
             #endregion
+
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+            app.UseSwagger();
+            app.UseSwaggerUI();
 
             app.UseHttpsRedirection();
 

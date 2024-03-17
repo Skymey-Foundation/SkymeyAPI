@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using SkymeyUserService.Interfaces.Users.Auth;
+using SkymeyUserService.Interfaces.Users.Login;
 using SkymeyUserService.Middleware;
-using SkymeyUserService.Services.User.Auth;
+using SkymeyUserService.Services.User.Login;
 using System.Text;
 
 namespace SkymeyAPI
@@ -18,8 +18,8 @@ namespace SkymeyAPI
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddControllers();
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+
+            #region JWT
             builder.Services.AddAuthorization();
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -35,7 +35,7 @@ namespace SkymeyAPI
                         ValidateIssuerSigningKey = true
                     };
                 });
-
+            #endregion
             #region Swagger Configuration
             builder.Services.AddSwaggerGen(swagger =>
             {
@@ -43,8 +43,8 @@ namespace SkymeyAPI
                 swagger.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "JWT Token Authentication API",
-                    Description = "ASP.NET Core 5.0 Web API"
+                    Title = "Skymey API",
+                    Description = ".NET 8.0 Web API"
                 });
                 // To Enable authorization using Swagger (JWT)
                 swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
@@ -54,7 +54,7 @@ namespace SkymeyAPI
                     Scheme = "Bearer",
                     BearerFormat = "JWT",
                     In = ParameterLocation.Header,
-                    Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\"",
+                    Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter your token in the text input below:",
                 });
                 swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
@@ -75,11 +75,8 @@ namespace SkymeyAPI
 
             var app = builder.Build();
 
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+            app.UseSwagger();
+            app.UseSwaggerUI();
 
             app.UseHttpsRedirection();
 
@@ -87,7 +84,6 @@ namespace SkymeyAPI
 
             app.UseAuthentication();
             app.UseAuthorization();
-
 
             app.MapControllers();
 

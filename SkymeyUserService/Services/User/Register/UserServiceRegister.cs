@@ -9,13 +9,13 @@ using SkymeyUserService.Data;
 using SkymeyUserService.Interfaces.Users.Register;
 using SkymeyUserService.Interfaces.Users.TokenService;
 
-namespace SkymeyUserService.Services.User.Auth
+namespace SkymeyUserService.Services.User.Register
 {
-    public class UserServiceRegister : IUserServiceRegister
+    public class UserServiceRegister : IUserServiceRegister, IDisposable
     {
-        private UserResponse _userResponse = new UserResponse();
+        private UserResponse _userResponse = new UserResponse() { AuthenticatedResponses = new AuthenticatedResponse() { } };
         ITokenService _tokenService;
-        public void UserServiceRegisterInit(ITokenService tokenService)
+        public UserServiceRegister(ITokenService tokenService)
         {
             _tokenService = tokenService;
         }
@@ -41,11 +41,12 @@ namespace SkymeyUserService.Services.User.Auth
 
         public async Task<IUserResponse> Register(RegisterModel registerModel)
         {
-            await using (ApplicationContext _db = new ApplicationContext())
+            _userResponse = await IsValidUserInformation(registerModel);
+            if (_userResponse.ResponseType)
             {
-                _userResponse = await IsValidUserInformation(registerModel);
-                if (_userResponse.ResponseType)
+                await using (ApplicationContext _db = new ApplicationContext())
                 {
+
                     var refreshToken = _tokenService.GenerateRefreshToken();
                     await _db.USR_001.AddAsync(new USR_001
                     {
@@ -57,8 +58,19 @@ namespace SkymeyUserService.Services.User.Auth
                     await _db.SaveChangesAsync();
                     _userResponse.AuthenticatedResponses = new AuthenticatedResponse { Token = _tokenService.GenerateJwtToken(registerModel.Email), RefreshToken = refreshToken };
                 }
-                return _userResponse;
             }
+            return _userResponse;
         }
+
+        #region Dispose, Ctor
+        public void Dispose()
+        {
+            _userResponse.Dispose();
+        }
+        ~UserServiceRegister()
+        {
+
+        }
+        #endregion
     }
 }

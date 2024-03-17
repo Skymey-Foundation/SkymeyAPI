@@ -13,7 +13,7 @@ using SkymeyLib.Models.Users.Login;
 using SkymeyLib.Models.Users.Register;
 using SkymeyLib.Models.Users.Table;
 using SkymeyUserService.Data;
-using SkymeyUserService.Interfaces.Users.Auth;
+using SkymeyUserService.Interfaces.Users.Login;
 using SkymeyUserService.Interfaces.Users.Register;
 using SkymeyUserService.Interfaces.Users.TokenService;
 using SkymeyUserService.Services.User;
@@ -29,37 +29,29 @@ namespace SkymeyUserService.Controllers
     [ApiController]
     public class UserController : Controller
     {
-        private readonly IConfiguration _configuration;
-        private readonly IUserServiceLogin _userService;
+        private readonly IUserServiceLogin _userServiceLogin;
         private readonly IUserServiceRegister _userServiceRegister;
-        private readonly ITokenService _tokenService;
 
-        public UserController(IConfiguration configuration,
-            IUserServiceLogin userService, 
-            IUserServiceRegister userServiceRegister,
-            ITokenService tokenService)
+        public UserController(IUserServiceLogin userService, IUserServiceRegister userServiceRegister)
         {
-            _configuration = configuration;
-            _userService = userService;
+            _userServiceLogin = userService;
             _userServiceRegister = userServiceRegister;
-            _tokenService = tokenService;
-            _tokenService.configuration(_configuration);
-            userServiceRegister.UserServiceRegisterInit(_tokenService);
-            _userService.UserServiceLoginInit(_tokenService);
         }
 
         [AllowAnonymous]
         [HttpPost("Register")]
         public async Task<IActionResult> Register(RegisterModel registerModel)
         {
-            IUserResponse resp = await _userServiceRegister.Register(registerModel);
-            if (resp.ResponseType)
+            using (IUserResponse resp = await _userServiceRegister.Register(registerModel))
             {
-                return Ok(resp);
-            }
-            else
-            {
-                return BadRequest(resp);
+                if (resp.ResponseType)
+                {
+                    return Ok(resp);
+                }
+                else
+                {
+                    return BadRequest(resp);
+                }
             }
         }
 
@@ -67,14 +59,16 @@ namespace SkymeyUserService.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> Login(LoginModel loginData)
         {
-            IUserResponse resp = await _userService.Login(loginData);
-            if (resp.ResponseType)
+            using (IUserResponse resp = await _userServiceLogin.Login(loginData))
             {
-                return Ok(resp);
-            }
-            else
-            {
-                return BadRequest(resp);
+                if (resp.ResponseType)
+                {
+                    return Ok(resp);
+                }
+                else
+                {
+                    return BadRequest(resp);
+                }
             }
         }
 
@@ -84,13 +78,13 @@ namespace SkymeyUserService.Controllers
             return Ok("API Validated");
         }
 
-        [Authorize]
-        //[Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
-        [HttpGet(nameof(ValidateToken))]
-        public Claim ValidateToken(string token)
-        {
-            var resp = _tokenService.GetPrincipalFromExpiredToken(token).Claims.FirstOrDefault();
-            return resp;
-        }
+        //[Authorize]
+        ////[Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
+        //[HttpGet(nameof(ValidateToken))]
+        //public Claim ValidateToken(string token)
+        //{
+        //    var resp = _tokenService.GetPrincipalFromExpiredToken(token).Claims.FirstOrDefault();
+        //    return resp;
+        //}
     }
 }

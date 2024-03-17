@@ -1,5 +1,5 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using SkymeyUserService.Interfaces.Users.Auth;
+using SkymeyUserService.Interfaces.Users.Login;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
@@ -9,13 +9,11 @@ namespace SkymeyUserService.Middleware
     {
         private readonly RequestDelegate _next;
         private readonly IConfiguration _configuration;
-        private readonly IUserServiceLogin _userService;
 
-        public JWTMiddleware(RequestDelegate next, IConfiguration configuration, IUserServiceLogin userService)
+        public JWTMiddleware(RequestDelegate next, IConfiguration configuration)
         {
             _next = next;
             _configuration = configuration;
-            _userService = userService;
         }
 
         public async Task Invoke(HttpContext context)

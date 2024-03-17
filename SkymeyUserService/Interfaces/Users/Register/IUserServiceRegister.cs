@@ -10,7 +10,6 @@ namespace SkymeyUserService.Interfaces.Users.Register
 {
     public interface IUserServiceRegister
     {
-        void UserServiceRegisterInit(ITokenService tokenService);
         Task<UserResponse> IsValidUserInformation(RegisterModel registerModel);
         Task<IUserResponse> Register(RegisterModel registerModel);
     }

@@ -18,6 +18,8 @@ using SkymeyUserService.Middleware;
 using System.Text;
 using System.Text.Json.Serialization;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace SkymeyUserService
 {
@@ -26,7 +28,7 @@ namespace SkymeyUserService
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-           
+            builder.WebHost.UseUrls("http://localhost:5000;https://localhost:5001;");
             builder.Configuration.AddJsonFile(builder.Configuration.GetSection("Config").Get<Config>().Path);
             
             builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
@@ -59,7 +61,7 @@ namespace SkymeyUserService
                 swagger.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "Skymey API",
+                    Title = "SkymeyUserService",
                     Description = ".NET 8.0 Web API"
                 });
                 // To Enable authorization using Swagger (JWT)
@@ -87,6 +89,7 @@ namespace SkymeyUserService
                     }
                 });
             });
+
             #endregion
 
             var app = builder.Build();
@@ -104,6 +107,23 @@ namespace SkymeyUserService
             app.MapControllers();
 
             app.Run();
+        }
+        internal class SwaggerDocumentFilter : IDocumentFilter
+        {
+            public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
+            {
+                foreach (var apiDescription in context.ApiDescriptions)
+                {
+                    var controllerActionDescriptor = (ControllerActionDescriptor)apiDescription.ActionDescriptor;
+
+                    // If the namespace of the controller DOES NOT start with..
+                    if (!controllerActionDescriptor.ControllerTypeInfo.FullName.StartsWith("SkymeyUserService"))
+                    {
+                        var key = "/" + apiDescription.RelativePath.TrimEnd('/');
+                        swaggerDoc.Paths.Remove(key); // Hides the Api
+                    }
+                }
+            }
         }
     }
 }

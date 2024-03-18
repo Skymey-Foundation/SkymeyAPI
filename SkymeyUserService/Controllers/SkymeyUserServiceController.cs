@@ -9,6 +9,7 @@ using MongoDB.Driver;
 using SkymeyLib.Enums;
 using SkymeyLib.Enums.Users;
 using SkymeyLib.Models.Mongo.Config;
+using SkymeyLib.Models.ServersSettings;
 using SkymeyLib.Models.Users.Login;
 using SkymeyLib.Models.Users.Register;
 using SkymeyLib.Models.Users.Table;
@@ -18,6 +19,7 @@ using SkymeyUserService.Interfaces.Users.Register;
 using SkymeyUserService.Interfaces.Users.TokenService;
 using SkymeyUserService.Services.User;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -27,19 +29,20 @@ namespace SkymeyUserService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : Controller
+    public class SkymeyUserServiceController : Controller
     {
         private readonly IUserServiceLogin _userServiceLogin;
         private readonly IUserServiceRegister _userServiceRegister;
 
-        public UserController(IUserServiceLogin userService, IUserServiceRegister userServiceRegister)
+        public SkymeyUserServiceController(IUserServiceLogin userService, IUserServiceRegister userServiceRegister)
         {
             _userServiceLogin = userService;
             _userServiceRegister = userServiceRegister;
         }
 
         [AllowAnonymous]
-        [HttpPost("Register")]
+        [HttpPost]
+        [Route("Register")]
         public async Task<IActionResult> Register(RegisterModel registerModel)
         {
             using (IUserResponse resp = await _userServiceRegister.Register(registerModel))
@@ -56,23 +59,26 @@ namespace SkymeyUserService.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("Login")]
-        public async Task<IActionResult> Login(LoginModel loginData)
+        [HttpPost]
+        [Route("Login")]
+        public async Task<ObjectResult> Login(LoginModel loginData)
         {
             using (IUserResponse resp = await _userServiceLogin.Login(loginData))
             {
+                HttpRequestMessage request = new HttpRequestMessage();
                 if (resp.ResponseType)
                 {
-                    return Ok(resp);
+                    return StatusCode(200, resp);
                 }
                 else
                 {
-                    return BadRequest(resp);
+                    return StatusCode(400, resp);
                 }
             }
         }
 
-        [HttpGet,Authorize,Route("GetResult")]
+        [HttpGet,Authorize]
+        [Route("GetResult")]
         public IActionResult GetResult()
         {
             return Ok("API Validated");

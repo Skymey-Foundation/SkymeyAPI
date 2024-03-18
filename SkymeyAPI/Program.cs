@@ -22,7 +22,7 @@ namespace SkymeyAPI
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+            builder.WebHost.UseUrls("http://localhost:5002;https://localhost:5003;");
             builder.Services.AddControllers();
             builder.Configuration.AddJsonFile(builder.Configuration.GetSection("Config").Get<Config>().Path);
 

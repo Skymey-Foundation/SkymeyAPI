@@ -8,12 +8,13 @@ using SkymeyLib.Models.Users.Table;
 using SkymeyUserService.Data;
 using SkymeyUserService.Interfaces.Users.Register;
 using SkymeyUserService.Interfaces.Users.TokenService;
+using System.Net;
 
 namespace SkymeyUserService.Services.User.Register
 {
     public class UserServiceRegister : IUserServiceRegister, IDisposable
     {
-        private UserResponse _userResponse = new UserResponse() { AuthenticatedResponses = new AuthenticatedResponse() { } };
+        private UserResponse _userResponse = new UserResponse() { StatusCode = HttpStatusCode.OK, AuthenticatedResponses = new AuthenticatedResponse() { } };
         ITokenService _tokenService;
         public UserServiceRegister(ITokenService tokenService)
         {
@@ -28,12 +29,14 @@ namespace SkymeyUserService.Services.User.Register
                 {
                     _userResponse.ResponseType = true;
                     _userResponse.Response = UserRegister.Ok.StringValue();
+                    _userResponse.StatusCode = HttpStatusCode.OK;
                     return _userResponse;
                 }
                 else
                 {
                     _userResponse.ResponseType = false;
                     _userResponse.Response = UserRegister.AlreadyExist.StringValue();
+                    _userResponse.StatusCode = HttpStatusCode.BadRequest;
                     return _userResponse;
                 }
             }

@@ -6,12 +6,13 @@ using SkymeyLib.Models.Users.Table;
 using SkymeyUserService.Data;
 using SkymeyUserService.Interfaces.Users.Login;
 using SkymeyUserService.Interfaces.Users.TokenService;
+using System.Net;
 
 namespace SkymeyUserService.Services.User.Login
 {
     public class UserServiceLogin : IUserServiceLogin, IDisposable
     {
-        private UserResponse _userResponse = new UserResponse() { AuthenticatedResponses = new AuthenticatedResponse() { } };
+        private UserResponse _userResponse = new UserResponse() { StatusCode = HttpStatusCode.OK, AuthenticatedResponses = new AuthenticatedResponse() { } };
         private USR_001? _USR_001;
         ITokenService _tokenService;
 
@@ -29,12 +30,14 @@ namespace SkymeyUserService.Services.User.Login
                 {
                     _userResponse.ResponseType = true;
                     _userResponse.Response = UserLogin.Ok.StringValue();
+                    _userResponse.StatusCode = HttpStatusCode.OK;
                     return _userResponse;
                 }
                 else
                 {
                     _userResponse.ResponseType = false;
                     _userResponse.Response = UserLogin.LoginAndPassword.StringValue();
+                    _userResponse.StatusCode = HttpStatusCode.BadRequest;
                     return _userResponse;
                 }
             }

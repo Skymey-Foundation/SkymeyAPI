@@ -1,6 +1,7 @@
 ﻿using Amazon.Runtime.Internal;
 using Microsoft.Extensions.Options;
 using RestSharp;
+using SkymeyLib.Interfaces.HTTPRequests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SkymeyLib.Models.HTTPRequests
 {
-    public class RestHTTP<T> : IDisposable
+    public class RestHTTP<T> : IRestHTTP<T>, IDisposable
     {
         private RestClientOptions _options { get; set; }
         private RestClient _client;

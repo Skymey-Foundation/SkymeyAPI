@@ -34,7 +34,7 @@ namespace SkymeyAPI.Controllers
             {
                 var resp = await respHTTP.Send();
                 if (resp.ResponseType)
-                {
+                { 
                     return StatusCode(Convert.ToInt32(resp.StatusCode), resp);
                 }
                 else

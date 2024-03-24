@@ -1,4 +1,5 @@
 using Amazon.Runtime;
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -6,7 +7,9 @@ using Microsoft.Extensions.Options;
 using Skymey.Data;
 using Skymey.Pages;
 using SkymeyLib.Handlers.HTTPHandler;
+using SkymeyLib.Interfaces.Users.Login;
 using SkymeyLib.Middleware;
+using SkymeyLib.Models.Users;
 using SkymeyLib.Models.Users.Login;
 
 namespace Skymey
@@ -20,7 +23,9 @@ namespace Skymey
             // Add services to the container.
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
+            builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddSingleton<WeatherForecastService>();
+            builder.Services.AddTransient<IValidateToken, ValidateTokenInfo>();
             builder.Services.AddTransient<HttpHandler>();
             builder.Services.AddHttpClient("ServerApi")
                 .ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.Configuration["ServerUrl"] ?? "https://localhost:7107"))

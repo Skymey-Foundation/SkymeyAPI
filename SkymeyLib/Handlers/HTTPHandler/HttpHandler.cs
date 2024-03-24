@@ -14,23 +14,6 @@ namespace SkymeyLib.Handlers.HTTPHandler
         {
             //System.Threading.Interlocked.Increment(ref _count);
             //request.Headers.Add("X-Custom-Header", _count.ToString());
-            Console.WriteLine(request);
-            Console.WriteLine("handler");
-            Console.WriteLine("handler");
-            Console.WriteLine("handler");
-            Console.WriteLine("handler");
-            Console.WriteLine("handler");
-            Console.WriteLine("handler");
-            Console.WriteLine("handler");
-            Console.WriteLine("handler");
-            Console.WriteLine("handler");
-            Console.WriteLine("handler");
-            Console.WriteLine("handler");
-            Console.WriteLine("handler");
-            Console.WriteLine("handler");
-            Console.WriteLine("handler");
-            Console.WriteLine("handler");
-            Console.WriteLine("handler2");
             return await base.SendAsync(request, cancellationToken);
         }
     }

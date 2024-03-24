@@ -4,6 +4,7 @@ using SkymeyUserService.Data;
 using SkymeyUserService.Interfaces.Users.Register;
 using SkymeyUserService.Interfaces.Users.TokenService;
 using SkymeyUserService.Services.User;
+using System.Security.Claims;
 
 namespace SkymeyUserService.Interfaces.Users.Login
 {
@@ -11,5 +12,6 @@ namespace SkymeyUserService.Interfaces.Users.Login
     {
         Task <UserResponse> IsValidUserInformation(LoginModel model);
         Task<UserResponse> Login(LoginModel loginModel);
+        Task<UserResponse> RefreshToken(ValidateToken token);
     }
 }

@@ -1,6 +1,13 @@
+using Amazon.Runtime;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.Options;
 using Skymey.Data;
+using Skymey.Pages;
+using SkymeyLib.Handlers.HTTPHandler;
+using SkymeyLib.Middleware;
+using SkymeyLib.Models.Users.Login;
 
 namespace Skymey
 {
@@ -14,6 +21,22 @@ namespace Skymey
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
             builder.Services.AddSingleton<WeatherForecastService>();
+            builder.Services.AddTransient<HttpHandler>();
+            builder.Services.AddHttpClient("ServerApi")
+                .ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.Configuration["ServerUrl"] ?? "https://localhost:7107"))
+                .AddHttpMessageHandler<HttpHandler>();
+            builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("ServerApi"));
+
+            //builder.Services.AddTransient<HttpHandler>();
+            //builder.Services.AddTransient<FetchData>();
+
+            //builder.Services.AddHttpClient("main", httpClient =>
+            //{
+            //    httpClient.BaseAddress = new Uri(builder.Configuration["ServerUrl"] ?? "");
+            //})
+            //.AddHttpMessageHandler<HttpHandler>();
+
+            //builder.Services.AddScoped<IHttpClientServiceImplementation, HttpClientFactoryService>();
 
             var app = builder.Build();
 
@@ -25,10 +48,11 @@ namespace Skymey
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            app.UseHttpsRedirection(); 
+            app.UseMiddleware<JWTMiddleware>();
+            
 
             app.UseStaticFiles();
-
             app.UseRouting();
 
             app.MapBlazorHub();

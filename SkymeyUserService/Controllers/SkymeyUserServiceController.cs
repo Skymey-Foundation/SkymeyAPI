@@ -4,6 +4,7 @@ using SkymeyLib.Models.Users.Login;
 using SkymeyLib.Models.Users.Register;
 using SkymeyUserService.Interfaces.Users.Login;
 using SkymeyUserService.Interfaces.Users.Register;
+using System.Security.Claims;
 
 namespace SkymeyUserService.Controllers
 {
@@ -56,20 +57,22 @@ namespace SkymeyUserService.Controllers
             }
         }
 
-        [HttpGet,Authorize]
+        [HttpGet,AllowAnonymous]
         [Route("GetResult")]
         public IActionResult GetResult()
         {
-            return Ok("API Validated");
+            return Ok(new LoginModel() { Email="email",Password="pwd"});
         }
 
         //[Authorize]
-        ////[Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
-        //[HttpGet(nameof(ValidateToken))]
-        //public Claim ValidateToken(string token)
-        //{
-        //    var resp = _tokenService.GetPrincipalFromExpiredToken(token).Claims.FirstOrDefault();
-        //    return resp;
-        //}
+        //[Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost]
+        [Route("ValidateToken")]
+        public async Task<ObjectResult> ValidateToken(ValidateToken token)
+        {
+            using (IUserResponse resp = await _userServiceLogin.RefreshToken(token)) {
+                return StatusCode(Convert.ToInt32(resp.StatusCode), resp);
+            }
+        }
     }
 }

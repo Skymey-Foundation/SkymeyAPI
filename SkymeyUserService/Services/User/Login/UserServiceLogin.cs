@@ -7,6 +7,7 @@ using SkymeyUserService.Data;
 using SkymeyUserService.Interfaces.Users.Login;
 using SkymeyUserService.Interfaces.Users.TokenService;
 using System.Net;
+using System.Security.Claims;
 
 namespace SkymeyUserService.Services.User.Login
 {
@@ -48,19 +49,60 @@ namespace SkymeyUserService.Services.User.Login
             _userResponse = await IsValidUserInformation(loginModel);
             if (_userResponse.ResponseType)
             {
-                await using (ApplicationContext _db = new ApplicationContext())
-                {
-                    if (_USR_001 != null)
-                    {
-                        var refreshToken = _tokenService.GenerateRefreshToken();
-                        _USR_001.RefreshToken = refreshToken;
-                        _USR_001.RefreshTokenExpiryTime = DateTime.Now.AddMinutes(20);
-                        await _db.SaveChangesAsync();
-                        _userResponse.AuthenticatedResponses = new AuthenticatedResponse { Token = _tokenService.GenerateJwtToken(loginModel.Email), RefreshToken = refreshToken };
-                    }
-                }
+                await UpdateTokenForUser();
             }
             return _userResponse;
+        }
+        
+        private async Task UpdateTokenForUser()
+        {
+            await using (ApplicationContext _db = new ApplicationContext())
+            {
+                if (_USR_001 != null)
+                {
+                    var refreshToken = _tokenService.GenerateRefreshToken();
+                    _USR_001.RefreshToken = refreshToken;
+                    _USR_001.RefreshTokenExpiryTime = DateTime.Now.AddDays(60);
+                    _db.USR_001.Update(_USR_001);
+                    await _db.SaveChangesAsync();
+                    _userResponse.AuthenticatedResponses = new AuthenticatedResponse { Token = _tokenService.GenerateJwtToken(_USR_001.Email), RefreshToken = refreshToken };
+                }
+            }
+        }
+
+        public async Task<UserResponse> RefreshToken(ValidateToken token)
+        {
+            _tokenService.GetPrincipalFromExpiredToken(token.Token);
+            if (await IsRefreshTokenOk(token.RefreshToken))
+            {
+                _userResponse.StatusCode = HttpStatusCode.OK;
+                _userResponse.Response = "Ok";
+                _userResponse.ResponseType = true;
+                await UpdateTokenForUser();
+                return _userResponse;
+            }
+            else
+            {
+                _userResponse.StatusCode = HttpStatusCode.BadRequest;
+                _userResponse.Response = "Invalid token";
+                _userResponse.ResponseType = false;
+                return _userResponse;
+            }
+        }
+
+        public async Task<bool> IsRefreshTokenOk(string refreshToken)
+        {
+            await using (ApplicationContext _db = new ApplicationContext())
+            {
+                _USR_001 = (from i in _db.USR_001 where i.RefreshToken == refreshToken select i).FirstOrDefault();
+                if (_USR_001 is not null) { 
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
         }
 
         #region Dispose, Ctor

@@ -2,6 +2,7 @@
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color:#DADADA;
 }
 
 h1:focus {
@@ -66,3 +67,9 @@ a, .btn-link {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+.navbar-toggler:focus {
+    outline: none;
+    box-shadow: none;
+    border: 1px solid #80808079;
+}

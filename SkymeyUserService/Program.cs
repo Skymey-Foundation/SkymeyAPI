@@ -14,12 +14,12 @@ using SkymeyUserService.Interfaces.Users.TokenService;
 using SkymeyUserService.Services.User.Login;
 using SkymeyUserService.Services.User.Register;
 using SkymeyUserService.Services.User.TokenService;
-using SkymeyUserService.Middleware;
 using System.Text;
 using System.Text.Json.Serialization;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using SkymeyLib.Middleware;
 
 namespace SkymeyUserService
 {
@@ -98,8 +98,6 @@ namespace SkymeyUserService
             app.UseSwaggerUI();
 
             app.UseHttpsRedirection();
-
-            app.UseMiddleware<JWTMiddleware>();
 
             app.UseAuthentication();
             app.UseAuthorization();

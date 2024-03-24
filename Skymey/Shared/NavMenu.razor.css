@@ -5,12 +5,12 @@
 .top-row {
     height: 4rem;
     background-color: #27272A;
-    border-right: 1px solid #80808038;
 }
 .top-row a {
     color:white;
     text-align:left;
     padding-left:15px;
+    font-size: 16pt;
 }
 
 .navbar-brand {

@@ -27,7 +27,7 @@ namespace SkymeyUserService.Services.User.TokenService
             SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[] { new Claim("id", userName) }),
-                Expires = DateTime.UtcNow.AddMinutes(5),
+                Expires = DateTime.UtcNow.AddMinutes(15),
                 Issuer = _Issuer,
                 Audience = _Audience,
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(_key), SecurityAlgorithms.HmacSha256Signature)
@@ -52,7 +52,7 @@ namespace SkymeyUserService.Services.User.TokenService
                 ValidateIssuer = false,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(_key),
-                ValidateLifetime = true //here we are saying that we don't care about the token's expiration date
+                ValidateLifetime = false //here we are saying that we don't care about the token's expiration date
             };
             JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
             SecurityToken securityToken;

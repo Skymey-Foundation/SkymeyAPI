@@ -12,6 +12,7 @@ main {
 
 .sidebar {
     background-color: #27272A;
+    border-right: 1px solid #80808038;
 }
 .top-row {
     border-bottom: 1px solid #80808038;

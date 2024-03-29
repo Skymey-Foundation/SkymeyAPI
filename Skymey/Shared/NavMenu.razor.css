@@ -3,18 +3,12 @@
 }
 
 .top-row {
-    height: 4rem;
     background-color: #27272A;
-}
-.top-row a {
-    color:white;
-    text-align:left;
-    padding-left:15px;
-    font-size: 16pt;
+    
 }
 
-.navbar-brand {
-    font-size: 1.1rem;
+.navbar-toggler:hover {
+    background-color:rgba(255,255,255,0.25);
 }
 
 .oi {
@@ -56,7 +50,7 @@
     color: white;
 }
 
-@media (min-width: 641px) {
+@media (min-width: 576px) {
     .navbar-toggler {
         display: none;
     }

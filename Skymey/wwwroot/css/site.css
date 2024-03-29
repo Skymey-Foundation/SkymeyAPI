@@ -73,35 +73,3 @@ a, .btn-link {
     box-shadow: none;
     border: 1px solid #80808079;
 }
-
-.login-content {
-    background-color: #18181B;
-}
-
-.login-content .card {
-    background-color: #27272A;
-    border-radius: 20px;
-}
-.login-content a {
-    text-decoration: none;
-    color:#3e9bff;
-}
-.login-content input {
-    background-color: #343434;
-    border-radius:10px;
-    outline-width: 0;
-}
-.login-content input:focus {
-    background-color: #343434;
-    border-radius:10px;
-    outline-width: 0;
-    outline: 0;
-    outline-offset: 0;
-}
-.login-content .forgot {
-    margin-top: 10px;
-}
-
-.login-content .sizing {
-    max-width:450px;
-}

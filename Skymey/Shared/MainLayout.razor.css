@@ -17,7 +17,7 @@ main {
 .top-row {
     border-bottom: 1px solid #80808038;
     background-color: #27272A;
-    justify-content: flex-end;
+    justify-content: flex-start;
     height: 4rem;
     display: flex;
     align-items: center;
@@ -69,4 +69,30 @@ main {
         padding-left: 2rem !important;
         padding-right: 1.5rem !important;
     }
+}
+.input-group {
+    max-width:400px;
+}
+.input-group .login-form {
+    float:left;
+}
+.input-group span {
+    background-color: #3F3F46;
+    color: #828282;
+    border: 1px solid #27272A;
+    border-right: 1px solid #3F3F46;
+    border-bottom-left-radius: 10px;
+    border-top-left-radius: 10px;
+}
+.input-group input {
+    background-color: #3F3F46;
+    color: #828282;
+    border: 1px solid #27272A;
+    border-left: 1px solid #3F3F46;
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.input-group .coin-stats {
+    float:right;
 }

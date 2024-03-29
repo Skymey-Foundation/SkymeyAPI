@@ -1,0 +1,40 @@
+﻿@page "/login"
+<PageTitle>Counter</PageTitle>
+<div class="container-fluid login-content">
+    <div class="row ">
+        <div class="col sizing position-relative m-auto">
+            <div class="card border-0 pb-2">
+                <div class="card-body">
+                    <div class="text-center">
+                        <img src="/images/logo.png" height="70" width="90" alt="Skymey" />
+                    </div>
+                    <h4 class="text-logo text-center mt-3">Sign In</h4>
+                    <br>
+                    <form class="text-center">
+                        <label for="Email" class="float-start">Email</label>
+                        <input class="form-control border-0 text-white" type="email" name="Email" placeholder="Email">
+                        <label for="Password" class="float-start mt-2">Password</label>
+                        <input class="form-control border-0 text-white" type="password" name="Password" placeholder="Password">
+                        <div class="row">
+                            <div class="forgot">
+                                <a href="" class=" float-end">Forgot Password?</a>
+                            </div>
+                        </div>
+                        <div class="row">
+                        <div class="col">
+                            <button class="btn btn-primary border-0 text-center" type="submit" name="submit">Sign In</button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="nomember">
+                    <p class="text-center">Don’t have an Account yet? <a href="">Create now</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ 
+@code {
+}

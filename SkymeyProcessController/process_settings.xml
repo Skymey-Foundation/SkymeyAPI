@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<starts>
+	<Processes>
+		<Process>
+			<Name>User service | 5000 | 5001</Name>
+			<Directory>C:\Users\New\Desktop\Skymey\</Directory>
+			<FileName>SkymeyUserService.exe.lnk</FileName>
+			<Agruments></Agruments>
+		</Process>
+		<Process>
+			<Name>Website | 5005 | 5006</Name>
+			<Directory>C:\Users\New\Desktop\Skymey\</Directory>
+			<FileName>Skymey.exe.lnk</FileName>
+			<Agruments></Agruments>
+		</Process>
+		<Process>
+			<Name>Skymey API | 5002 | 5003</Name>
+			<Directory>C:\Users\New\Desktop\Skymey\</Directory>
+			<FileName>SkymeyAPI.exe.lnk</FileName>
+			<Agruments></Agruments>
+		</Process>
+	</Processes>
+</starts>

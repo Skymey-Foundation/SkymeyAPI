@@ -26,6 +26,7 @@ namespace SkymeyAPI
             var builder = WebApplication.CreateBuilder(args);
             builder.WebHost.UseUrls("http://localhost:5002;https://localhost:5003;");
             builder.Services.AddControllers();
+            builder.Configuration.AddJsonFile("appsettingsAPI.json");
             builder.Configuration.AddJsonFile(builder.Configuration.GetSection("Config").Get<Config>().Path);
 
             builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);

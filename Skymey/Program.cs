@@ -27,8 +27,9 @@ namespace Skymey
             builder.Services.AddSingleton<WeatherForecastService>();
             builder.Services.AddTransient<IValidateToken, ValidateTokenInfo>();
             builder.Services.AddTransient<HttpHandler>();
+            builder.WebHost.UseUrls("http://localhost:5005;https://localhost:5006;");
             builder.Services.AddHttpClient("ServerApi")
-                .ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.Configuration["ServerUrl"] ?? "https://localhost:7107"))
+                .ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.Configuration["ServerUrl"] ?? "https://localhost:5006"))
                 .AddHttpMessageHandler<HttpHandler>();
             builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("ServerApi"));
 

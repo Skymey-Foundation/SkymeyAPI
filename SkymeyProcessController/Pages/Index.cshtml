@@ -1,0 +1,149 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Process list";
+}
+
+<h2>Process list | 5010 | 5011</h2>
+<div class="container">
+    <div class="row">
+        <div class="col-xs-6 col-sm-4">
+            <button class="btn btn-danger" value="killall" onclick="StopAll()">Stop all</button>
+        </div>
+        <div class="col-xs-6 col-sm-4">
+            <button class="btn btn-primary" value="runall" onclick="RunAll()">Start all</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Proecess</th>
+            <th scope="col">File</th>
+            <th scope="col">Directory</th>
+            <th scope="col">Params</th>
+            <th scope="col">Status</th>
+            <th scope="col">Start</th>
+            <th scope="col">Stop</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var proc in Model.ProcessesList)
+        {
+            <tr>
+                <td class="p-1">@proc.Name</td>
+                <td class="p-1">@proc.FileName</td>
+                <td class="p-1">@proc.Directory</td>
+                <td class="p-1">@proc.Agruments</td>
+                @if (proc.Show == true) {
+                                <td id="@proc.FileName.Replace(".exe","")" class="status p-1"><span class="bg-success text-light p-1">@proc.Show</span></td>
+                }
+                else {
+                    <td id="@proc.FileName.Replace(".exe","")" class="status p-1"><span class="bg-danger text-light p-1">@proc.Show</span></td>
+                }
+                <td class="p-1"><button class="btn btn-primary" onclick="Start('@proc.Name','@proc.FileName' ,'@proc.Directory.Replace("\\","\\\\")' ,'@proc.Agruments')">Start</button></td>
+                @* <td>
+            <button type="button" value="Start" onclick="Test('@proc.Name','@proc.FileName','@proc.Directory.Replace("\\","\\\\")')">Start</button>
+            </td> *@
+                <td class="p-1"><button class="btn btn-danger" onclick="Stop('@proc.FileName')">Stop</button></td>
+            </tr>
+        }
+        
+    </tbody>
+</table>
+</div>
+</div>
+</div>
+
+
+
+@section Scripts
+{
+    <script>
+        function Start(name,filename,directory,argruments) {
+            var dataO = {
+                Name: name,
+                Directory: directory,
+                FileName: filename,
+                Agruments: argruments
+            };
+
+            var json = JSON.stringify(dataO);
+            console.log(json);
+            var settings = {
+                "url": "https://localhost:5011/api/Proc/Run",
+                "method": "POST",
+                "timeout": 0,
+                "headers": {
+                    "Content-Type": "application/json",
+                },
+                "data": json,
+            };
+
+            $.ajax(settings).done(function (response) {
+                if (response == true) {
+                    $('#' + filename.replace(".exe", "")).html('<span class="bg-success text-light p-1">True</span>');
+                }
+            });
+        }
+        function Stop(filename) {
+            var dataO = {
+                Name: "",
+                Directory: "",
+                FileName: filename,
+                Agruments: ""
+            };
+
+            var json = JSON.stringify(dataO);
+
+            var settings = {
+                "url": "https://localhost:5011/api/Proc/Kill",
+                "method": "POST",
+                "timeout": 0,
+                "headers": {
+                    "Content-Type": "application/json",
+                },
+                "data": json,
+            };
+
+            $.ajax(settings).done(function (response) {
+                if (response == true) {
+                    $('#' + filename.replace(".exe", "")).html('<span class="bg-danger text-light p-1">False</span>');
+                }
+            });
+        }
+        function StopAll() {
+            var settings = {
+                "url": "https://localhost:5011/api/Proc/StopAll",
+                "method": "POST",
+                "timeout": 0,
+                "headers": {
+                    "Content-Type": "application/json",
+                }
+            };
+
+            $.ajax(settings).done(function (response) {
+                if (response == true) {
+                    $('.status').html('<span class="bg-danger text-light p-1">False</span>');
+                }
+            });
+        }
+        function RunAll() {
+            var settings = {
+                "url": "https://localhost:5011/api/Proc/RunAll",
+                "method": "POST",
+                "timeout": 0,
+                "headers": {
+                    "Content-Type": "application/json",
+                }
+            };
+
+            $.ajax(settings).done(function (response) {
+                if (response == true) {
+                    $('.status').html('<span class="bg-success text-light p-1">True</span>');
+                }
+            });
+        }
+    </script>
+} 

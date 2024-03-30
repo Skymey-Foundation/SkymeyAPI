@@ -1,7 +1,7 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'roboto-regular'; 
     color: #DADADA;
     background-color: #18181B;
 }
@@ -73,4 +73,21 @@ a, .btn-link {
     outline: none;
     box-shadow: none;
     border: 1px solid #80808079;
+}
+
+.btn-primary {
+    background-color: #0A95FF;
+}
+
+.btn-primary:hover,.btn-primary:active,.btn-primary:focus {
+    background-color: #0182e5;
+}
+
+@font-face {
+    font-family: 'ubuntu-regular';
+    src: url('../fonts/ubuntu/ubuntu-regular.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'roboto-regular';
+    src: url('../fonts/roboto/roboto-regular.ttf') format('truetype');
 }

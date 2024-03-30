@@ -29,6 +29,15 @@ namespace SkymeyUserService
         {
             var builder = WebApplication.CreateBuilder(args);
             builder.WebHost.UseUrls("http://localhost:5000;https://localhost:5001;");
+            try
+            {
+                builder.Configuration.AddJsonFile("F:\\Skymey\\SkymeyAPI\\SkymeyUserService\\appsettingsUserService.json");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+            finally { }
             builder.Configuration.AddJsonFile(builder.Configuration.GetSection("Config").Get<Config>().Path);
             
             builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);

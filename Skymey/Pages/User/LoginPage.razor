@@ -1,4 +1,6 @@
-﻿@page "/login"
+﻿@page "/user/login"
+@using Blazorise
+
 <PageTitle>Sign in</PageTitle>
 <div class="container-fluid login-content">
     <div class="row ">
@@ -8,13 +10,16 @@
                     <div class="text-center">
                         <img src="/images/logo.png" height="70" width="90" alt="Skymey" />
                     </div>
-                    <h4 class="text-logo text-center mt-3">Sign In</h4>
+                    <h4 class="text-logo text-center mt-3">Sign in</h4>
                     <br>
-                    <form class="text-center">
+                    <EditForm Model="@loginModel" OnValidSubmit="SubmitForm" class="text-center">
+                        <FluentValidationValidator />
                         <label for="Email" class="float-start">Email</label>
-                        <input class="form-control border-0 text-white" type="email" name="Email" placeholder="Email">
+                        <InputText class="form-control border-0 text-white" type="email" name="Email" placeholder="Email" @bind-Value="loginModel.Email" />
+                        <ValidationMessage For="@(() => loginModel.Email)" />
                         <label for="Password" class="float-start mt-2">Password</label>
-                        <input class="form-control border-0 text-white" type="password" name="Password" placeholder="Password">
+                        <InputText class="form-control border-0 text-white" type="text" name="Password" placeholder="Password" @bind-Value="loginModel.Password" />
+                        <ValidationMessage For="@(() => loginModel.Password)" />
                         <div class="row">
                             <div class="forgot">
                                 <a href="" class=" float-end">Forgot Password?</a>
@@ -26,7 +31,7 @@
                             </div>
                         </div>
 
-                    </form>
+                    </EditForm>
                 </div>
                 <div class="nomember">
                     <p class="text-center">Don’t have an Account yet? <a href="register">Sign up now</a></p>
@@ -37,4 +42,19 @@
 </div>
  
 @code {
+    private Validations fluentValidations;
+    protected LoginModel loginModel = new LoginModel();
+    private LoginModelValidation validator = new LoginModelValidation();
+    private LoginModel person = new LoginModel();
+    //private LoginPage result = validator.Validate(this, options => options.IncludeRuleSets("Names"));
+
+
+    private async Task SubmitForm()
+    {
+        Console.WriteLine("validate");
+        // if (await fluentValidations.ValidateAll())
+        // {
+        //     // the person is validated and we can proceed with the saving process
+        // }
+    }
 }

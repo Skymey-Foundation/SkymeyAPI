@@ -18,13 +18,13 @@
         outline-width: 0;
     }
 
-        .login-content input:focus {
-            background-color: #3F3F46;
-            border-radius: 10px;
-            outline-width: 0;
-            outline: 0;
-            outline-offset: 0;
-        }
+.card-body input {
+    background-color: #3F3F46;
+    border-radius: 10px;
+    outline-width: 0;
+}
+
+        
 
     .login-content .forgot {
         margin-top: 10px;

@@ -1,4 +1,5 @@
 
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
@@ -14,6 +15,7 @@ using SkymeyLib.Models.HTTPRequests;
 using SkymeyLib.Models.ServersSettings;
 using SkymeyUserService.Interfaces.Users.Login;
 using SkymeyUserService.Services.User.Login;
+using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -28,8 +30,9 @@ namespace SkymeyAPI
             builder.Services.AddControllers();
             builder.Configuration.AddJsonFile("appsettingsAPI.json");
             builder.Configuration.AddJsonFile(builder.Configuration.GetSection("Config").Get<Config>().Path);
-
-            builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+            //builder.Services.AddBlazoriseFluentValidation();
+            builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles).AddFluentValidation(fv =>
+            fv.RegisterValidatorsFromAssembly(Assembly.Load("Skymey.Shared")));
             
             builder.Services.AddSingleton<IUsers, Users>();
             builder.Services.AddSingleton<ICrypto, Crypto>();

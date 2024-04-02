@@ -11,6 +11,11 @@ using SkymeyLib.Interfaces.Users.Login;
 using SkymeyLib.Middleware;
 using SkymeyLib.Models.Users;
 using SkymeyLib.Models.Users.Login;
+using SkymeyLib;
+using FluentValidation.AspNetCore;
+using System.Reflection;
+using Blazorise;
+using Blazorise.FluentValidation;
 
 namespace Skymey
 {
@@ -20,8 +25,12 @@ namespace Skymey
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services
+    .AddBlazorise()
+    .AddBlazoriseFluentValidation();
             // Add services to the container.
             builder.Services.AddRazorPages();
+            builder.Services.AddControllersWithViews().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginModelValidation>());
             builder.Services.AddServerSideBlazor();
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddSingleton<WeatherForecastService>();
@@ -32,6 +41,7 @@ namespace Skymey
                 .ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.Configuration["ServerUrl"] ?? "https://localhost:5006"))
                 .AddHttpMessageHandler<HttpHandler>();
             builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("ServerApi"));
+
 
             //builder.Services.AddTransient<HttpHandler>();
             //builder.Services.AddTransient<FetchData>();

@@ -17,7 +17,7 @@
 			<Name>Skymey API | 5002 | 5003</Name>
 			<Directory>C:\Users\New\Desktop\Skymey\</Directory>
 			<FileName>SkymeyAPI.exe.lnk</FileName>
-			<Agruments></Agruments>
+			<Agruments></Agruments>	 
 		</Process>
 	</Processes>
 </starts>

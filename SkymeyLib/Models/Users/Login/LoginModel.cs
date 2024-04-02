@@ -5,16 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using FluentValidation;
 
 namespace SkymeyLib.Models.Users.Login
 {
     public class LoginModel
     {
-        [Required]
-        [JsonPropertyName("Email")]
-        public required string Email { get; set; }
-        [Required]
-        [JsonPropertyName("Password")]
-        public required string Password { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
     }
 }

@@ -10,23 +10,26 @@
                     </div>
                     <h4 class="text-logo text-center mt-3">Sign up</h4>
                     <br>
-                    <form class="text-center">
+                    <EditForm Model="@registerModel" OnValidSubmit="SubmitForm" class="text-center">
+                        <FluentValidationValidator />
                         <label for="Email" class="float-start">Email</label>
-                        <input aria-label="Email" class="form-control border-0 text-white" type="email" name="Email" placeholder="Email">
+                        <InputText class="form-control border-0 text-white" type="email" name="Email" placeholder="Email" @bind-Value="registerModel.Email" />
+                        <ValidationMessage For="@(() => registerModel.Email)" />
                         <label for="Password" class="float-start mt-2">Password</label>
-                        <input aria-label="Password" class="form-control border-0 text-white" type="password" name="Password" placeholder="Password">
+                        <InputText class="form-control border-0 text-white" type="text" name="Password" placeholder="Password" @bind-Value="registerModel.Password" />
+                        <ValidationMessage For="@(() => registerModel.Password)" />
                         <div class="row">
                             <div class="forgot">
                                 <a href="" class=" float-end">Forgot Password?</a>
                             </div>
                         </div>
                         <div class="row">
-                        <div class="col">
-                            <button class="btn btn-primary border-0 text-center" type="submit" name="submit">Sign up</button>
+                            <div class="col">
+                                <button class="btn btn-primary border-0 text-center" type="submit" name="submit">Sign In</button>
                             </div>
                         </div>
 
-                    </form>
+                    </EditForm>
                 </div>
                 <div class="nomember">
                     <p class="text-center">Already have an Account? <a href="login">Sign in</a></p>
@@ -37,5 +40,11 @@
 </div>
  
 @code {
+    protected RegisterModel registerModel = new RegisterModel();
 
+
+    private async Task SubmitForm()
+    {
+        Console.WriteLine("validate");
+    }
 }

@@ -1,5 +1,5 @@
 ﻿@page "/user/login"
-@using Blazorise
+
 
 <PageTitle>Sign in</PageTitle>
 <div class="container-fluid login-content">
@@ -42,19 +42,10 @@
 </div>
  
 @code {
-    private Validations fluentValidations;
     protected LoginModel loginModel = new LoginModel();
-    private LoginModelValidation validator = new LoginModelValidation();
-    private LoginModel person = new LoginModel();
-    //private LoginPage result = validator.Validate(this, options => options.IncludeRuleSets("Names"));
-
 
     private async Task SubmitForm()
     {
         Console.WriteLine("validate");
-        // if (await fluentValidations.ValidateAll())
-        // {
-        //     // the person is validated and we can proceed with the saving process
-        // }
     }
 }

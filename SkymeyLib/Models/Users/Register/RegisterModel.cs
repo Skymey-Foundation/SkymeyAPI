@@ -10,11 +10,9 @@ namespace SkymeyLib.Models.Users.Register
 {
     public class RegisterModel
     {
-        [Required]
         [JsonPropertyName("Email")]
-        public required string Email { get; set; }
-        [Required]
+        public string Email { get; set; }
         [JsonPropertyName("Password")]
-        public required string Password { get; set; }
+        public string Password { get; set; }
     }
 }

@@ -16,6 +16,7 @@ using FluentValidation.AspNetCore;
 using System.Reflection;
 using Blazorise;
 using Blazorise.FluentValidation;
+using SkymeyLib.Models.Users.Register;
 
 namespace Skymey
 {
@@ -30,7 +31,8 @@ namespace Skymey
     .AddBlazoriseFluentValidation();
             // Add services to the container.
             builder.Services.AddRazorPages();
-            builder.Services.AddControllersWithViews().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginModelValidation>());
+            builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<RegisterModelValidation>());
+            builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginModelValidation>());
             builder.Services.AddServerSideBlazor();
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddSingleton<WeatherForecastService>();

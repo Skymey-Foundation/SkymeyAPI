@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SkymeyLib.Enums;
 using SkymeyLib.Enums.Users;
+using SkymeyLib.Models.Users;
 using SkymeyLib.Models.Users.Login;
 using SkymeyLib.Models.Users.Table;
 using SkymeyUserService.Data;

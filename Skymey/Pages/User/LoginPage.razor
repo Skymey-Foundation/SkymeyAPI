@@ -1,5 +1,5 @@
 ﻿@page "/user/login"
-
+@inject HttpClient http
 
 <PageTitle>Sign in</PageTitle>
 <div class="container-fluid login-content">
@@ -42,10 +42,12 @@
 </div>
  
 @code {
-    protected LoginModel loginModel = new LoginModel();
+    private LoginModel loginModel = new LoginModel();
 
     private async Task SubmitForm()
     {
+        using var response = await http.PostAsJsonAsync("https://localhost:5003/api/SkymeyAPI/User/Login", loginModel);
+        var resp = JsonSerializer.Deserialize<UserResponse>(await response.Content.ReadAsStringAsync());
         Console.WriteLine("validate");
     }
 }

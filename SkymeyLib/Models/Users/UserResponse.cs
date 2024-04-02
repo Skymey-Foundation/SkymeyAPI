@@ -1,9 +1,8 @@
 ﻿using SkymeyLib.Models.Users.Login;
-using SkymeyUserService.Interfaces.Users.Register;
 using System.Net;
 using System.Text.Json.Serialization;
 
-namespace SkymeyUserService.Services.User
+namespace SkymeyLib.Models.Users
 {
     public class UserResponse : IUserResponse
     {

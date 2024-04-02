@@ -1,4 +1,5 @@
-﻿using SkymeyLib.Models.Users.Login;
+﻿using SkymeyLib.Models.Users;
+using SkymeyLib.Models.Users.Login;
 using SkymeyLib.Models.Users.Register;
 using SkymeyUserService.Data;
 using SkymeyUserService.Interfaces.Users.Register;

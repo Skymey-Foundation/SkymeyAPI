@@ -1,6 +1,6 @@
 ﻿using SkymeyLib.Models.Users.Login;
 
-namespace SkymeyUserService.Interfaces.Users.Register
+namespace SkymeyLib.Models.Users
 {
     public interface IUserResponseJWT
     {

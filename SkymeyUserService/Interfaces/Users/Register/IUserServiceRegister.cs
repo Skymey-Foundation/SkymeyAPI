@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SkymeyLib.Models.Users;
 using SkymeyLib.Models.Users.Login;
 using SkymeyLib.Models.Users.Register;
 using SkymeyLib.Models.Users.Table;

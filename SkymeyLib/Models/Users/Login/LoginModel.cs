@@ -11,7 +11,9 @@ namespace SkymeyLib.Models.Users.Login
 {
     public class LoginModel
     {
+        [JsonPropertyName("Email")]
         public string Email { get; set; }
+        [JsonPropertyName("Password")]
         public string Password { get; set; }
     }
 }

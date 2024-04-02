@@ -30,9 +30,6 @@ namespace SkymeyAPI
             builder.Services.AddControllers();
             builder.Configuration.AddJsonFile("appsettingsAPI.json");
             builder.Configuration.AddJsonFile(builder.Configuration.GetSection("Config").Get<Config>().Path);
-            //builder.Services.AddBlazoriseFluentValidation();
-            builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles).AddFluentValidation(fv =>
-            fv.RegisterValidatorsFromAssembly(Assembly.Load("Skymey.Shared")));
             
             builder.Services.AddSingleton<IUsers, Users>();
             builder.Services.AddSingleton<ICrypto, Crypto>();

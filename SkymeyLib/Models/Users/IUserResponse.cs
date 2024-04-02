@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace SkymeyUserService.Interfaces.Users.Register
+namespace SkymeyLib.Models.Users
 {
     public interface IUserResponse : IUserResponseJWT, IDisposable
     {

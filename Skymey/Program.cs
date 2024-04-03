@@ -17,6 +17,9 @@ using System.Reflection;
 using Blazorise;
 using Blazorise.FluentValidation;
 using SkymeyLib.Models.Users.Register;
+using BlazorSchool.Components.Web.Core;
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Skymey
 {
@@ -25,16 +28,14 @@ namespace Skymey
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
-            builder.Services
-    .AddBlazorise()
-    .AddBlazoriseFluentValidation();
             // Add services to the container.
             builder.Services.AddRazorPages();
+            builder.Services.AddSingleton<LoginModelValidation>();
             builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<RegisterModelValidation>());
             builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginModelValidation>());
             builder.Services.AddServerSideBlazor();
             builder.Services.AddBlazoredLocalStorage();
+            builder.Services.AddBlazorComponents();
             builder.Services.AddSingleton<WeatherForecastService>();
             builder.Services.AddTransient<IValidateToken, ValidateTokenInfo>();
             builder.Services.AddTransient<HttpHandler>();

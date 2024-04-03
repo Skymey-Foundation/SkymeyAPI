@@ -1,5 +1,6 @@
 ﻿@page "/user/login"
 @inject HttpClient http
+@inject LoginModelValidation valid
 
 <PageTitle>Sign in</PageTitle>
 <div class="container-fluid login-content">
@@ -12,13 +13,13 @@
                     </div>
                     <h4 class="text-logo text-center mt-3">Sign in</h4>
                     <br>
-                    <EditForm Model="@loginModel" OnValidSubmit="SubmitForm" class="text-center">
+                    <EditForm Model="loginModel" class="text-center" OnValidSubmit="SubmitForm">
                         <FluentValidationValidator />
                         <label for="Email" class="float-start">Email</label>
                         <InputText class="form-control border-0 text-white" type="email" name="Email" placeholder="Email" @bind-Value="loginModel.Email" />
                         <ValidationMessage For="@(() => loginModel.Email)" />
                         <label for="Password" class="float-start mt-2">Password</label>
-                        <InputText class="form-control border-0 text-white" type="text" name="Password" placeholder="Password" @bind-Value="loginModel.Password" />
+                        <InputText class="form-control border-0 text-white" type="password" name="Password" placeholder="Password" @oninput="@((ui) => {loginModel.Password = ui.Value.ToString();})" @bind-Value="loginModel.Password" />
                         <ValidationMessage For="@(() => loginModel.Password)" />
                         <div class="row">
                             <div class="forgot">
@@ -27,7 +28,7 @@
                         </div>
                         <div class="row">
                         <div class="col">
-                            <button class="btn btn-primary border-0 text-center" type="submit" name="submit">Sign In</button>
+                                <button class="btn btn-primary border-0 text-center" type="submit" name="submit">Sign In</button>
                             </div>
                         </div>
 
@@ -43,11 +44,12 @@
  
 @code {
     private LoginModel loginModel = new LoginModel();
-
     private async Task SubmitForm()
     {
-        using var response = await http.PostAsJsonAsync("https://localhost:5003/api/SkymeyAPI/User/Login", loginModel);
-        var resp = JsonSerializer.Deserialize<UserResponse>(await response.Content.ReadAsStringAsync());
-        Console.WriteLine("validate");
+        using (var response = await http.PostAsJsonAsync("https://localhost:5003/api/SkymeyAPI/User/Login", loginModel))
+        {
+            var resp = JsonSerializer.Deserialize<UserResponse>(await response.Content.ReadAsStreamAsync());
+            Console.WriteLine("validate");
+        }
     }
 }

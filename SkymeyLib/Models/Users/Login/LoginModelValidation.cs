@@ -24,6 +24,7 @@ namespace SkymeyLib.Models.Users.Login
             RuleFor(_ => _.Password).Matches(@"[a-z]+").WithMessage("Your password must contain at least one lowercase letter.");
             RuleFor(_ => _.Password).Matches(@"[0-9]+").WithMessage("Your password must contain at least one number.");
             RuleFor(_ => _.Password).Matches(@"[\@\!\?\*\^\&\%\.]+").WithMessage("Your password must contain at least one (@!?&^% *.).");
+  
         }
     }
 }

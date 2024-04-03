@@ -10,8 +10,10 @@
     <PackageReference Include="Blazored.FluentValidation" Version="2.1.0" />
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageReference Include="Blazorise.FluentValidation" Version="1.5.1" />
+    <PackageReference Include="BlazorSchool.Components.Web" Version="7.2.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.0" />
+    <PackageReference Include="Smart.Blazor" Version="18.0.6" />
   </ItemGroup>
 
   <ItemGroup>

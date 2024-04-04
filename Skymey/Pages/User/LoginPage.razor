@@ -5,8 +5,15 @@
 @inject ProtectedSessionStorage sessionStorage
 @inject NavigationManager NavigationManager
 @inject IAuthenticationService AuthenticationService
+@inject IHttpService httpService
+
 
 <PageTitle>Sign in</PageTitle>
+<AuthorizeView>
+    <Authorized>
+        <ReditectToHome />
+    </Authorized>
+</AuthorizeView>
 <div class="container-fluid login-content">
     <div class="row ">
         <div class="col sizing position-relative m-auto">
@@ -48,11 +55,10 @@
  
 @code {
     private LoginModel loginModel = new LoginModel();
-    [CascadingParameter]
-    public Task<AuthenticationState> AuthState { get; set; }
+
     private async Task SubmitForm()
     {
-        using (var response = await http.PostAsJsonAsync("https://localhost:5003/api/SkymeyAPI/User/Login", loginModel))
+        using (var response = await http.PostAsJsonAsync("https://localhost:5006/api/User/Login", loginModel))
         {
             using (var resp = JsonSerializer.Deserialize<UserResponse>(await response.Content.ReadAsStreamAsync()))
             {

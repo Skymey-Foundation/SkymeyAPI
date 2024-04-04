@@ -63,6 +63,24 @@ namespace SkymeyAPI.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("RefreshToken")]
+        public async Task<ObjectResult> RefreshToken(ValidateToken Token)
+        {
+            using (RestHTTP<UserResponse> respHTTP = new RestHTTP<UserResponse>(_servers.UsersSettings.Server, _servers.UsersSettings.Port, UserRegister.RefreshToken.StringValue(), Method.Post, Token))
+            {
+                var resp = await respHTTP.Send();
+                if (resp.ResponseType)
+                {
+                    return StatusCode(Convert.ToInt32(resp.StatusCode), resp);
+                }
+                else
+                {
+                    return StatusCode(Convert.ToInt32(resp.StatusCode), resp);
+                }
+            }
+        }
+
         [HttpGet]
         [Authorize]
         [Route("Get")]

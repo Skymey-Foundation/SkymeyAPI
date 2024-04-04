@@ -19,7 +19,7 @@ namespace SkymeyUserService.Data
         {
             var builder = new ConfigurationBuilder()
                               .SetBasePath(Directory.GetCurrentDirectory())
-                              .AddJsonFile("appsettings.json");
+                              .AddJsonFile("appsettingsUserService.json");
             var sectionpath = builder.Build().GetSection("Config");
             builder.AddJsonFile(sectionpath.Get<Config>().Path);
             optionsBuilder.UseMongoDB(builder.Build().GetSection("MongoConfig:Server").Value, builder.Build().GetSection("MongoConfig:Database").Value);

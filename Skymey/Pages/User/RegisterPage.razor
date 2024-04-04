@@ -3,8 +3,15 @@
 @inject ProtectedLocalStorage localStorage
 @inject ProtectedSessionStorage sessionStorage
 @inject NavigationManager NavigationManager
+@inject IAuthenticationService AuthenticationService
+
 
 <PageTitle>Sign up</PageTitle>
+<AuthorizeView>
+    <Authorized>
+        <ReditectToHome />
+    </Authorized>
+</AuthorizeView>
 <div class="container-fluid login-content">
     <div class="row ">
         <div class="col sizing position-relative m-auto">
@@ -30,7 +37,7 @@
                         </div>
                         <div class="row">
                             <div class="col">
-                                <button class="btn btn-primary border-0 text-center" type="submit" name="submit">Sign Un</button>
+                                <button class="btn btn-primary border-0 text-center" type="submit" name="submit">Sign Up</button>
                             </div>
                         </div>
 
@@ -46,6 +53,7 @@
  
 @code {
     private RegisterModel registerModel = new RegisterModel();
+
     private async Task SubmitForm()
     {
         using (var response = await http.PostAsJsonAsync("https://localhost:5003/api/SkymeyAPI/User/Register", registerModel))
@@ -56,7 +64,10 @@
                 {
                     await sessionStorage.SetAsync("Token", resp.AuthenticatedResponses.Token);
                     await localStorage.SetAsync("RefreshToken", resp.AuthenticatedResponses.RefreshToken);
-                    NavigationManager.NavigateTo("/");
+                    await AuthenticationService.Login(registerModel.Email, registerModel.Password);
+                    AuthenticationService.User.Token = resp.AuthenticatedResponses.Token;
+                    AuthenticationService.User.RefreshToken = resp.AuthenticatedResponses.RefreshToken;
+                    NavigationManager.NavigateTo("/", true);
                 }
             }
         }

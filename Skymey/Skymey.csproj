@@ -20,8 +20,4 @@
     <ProjectReference Include="..\SkymeyLib\SkymeyLib.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 </Project>

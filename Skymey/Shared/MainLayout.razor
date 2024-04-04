@@ -9,8 +9,9 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IAuthenticationService AuthenticationService
 @inject NavigationManager NavigationManager
+@inject IHttpService httpService
 <PageTitle>Skymey</PageTitle>
-<AuthorizeView>
+
     <div class="container-fluid">
         <div class="row">
             <header class="col p-0">
@@ -24,6 +25,7 @@
                         </span>
                         <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="basic-addon1">
                     </div>
+                <AuthorizeView>
                     <div class="col">
                         <div class="coin-stats float-end d-flex">
                             <div class="coins  align-items-center d-flex text-center" data-bs-toggle="tooltip" title="SKY token. Perform actions and earn rewards!">
@@ -34,11 +36,11 @@
                             </div>
                         </div><!-- HTML to write -->
                     </div>
+</AuthorizeView>
                 </div>
             </header>
         </div>
     </div>
-</AuthorizeView>
 <div class="container-fluid">
         <div class="row">
         <aside class="sidebar col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 col-xxl-1">
@@ -72,7 +74,10 @@
             {
                 if (_AuthenticationService.User != null)
                 {
+                    await httpService.CheckJwt(new User { Email = _AuthenticationService.User.Email, Token = _AuthenticationService.User.Token, RefreshToken = _AuthenticationService.User.RefreshToken });
+                    await _AuthenticationService.Initialize(); 
                     await ((CustomAuthenticationStateProvider)AuthenticationStateProvider).AuthenticateUser(_AuthenticationService.User.Email);
+                    await AuthenticationService.Login(new User { Email = _AuthenticationService.User.Email, Token = _AuthenticationService.User.Token, RefreshToken = _AuthenticationService.User.RefreshToken });
                     http.DefaultRequestHeaders.Remove("Authorization");
                     http.DefaultRequestHeaders.Add("Authorization", $"Bearer {_AuthenticationService.User.Token}");
                     await sessionStorage.SetAsync("Token", _AuthenticationService.User.Token);
@@ -87,9 +92,10 @@
             if (firstRender)
             {
                 Console.WriteLine("User not null");
-                http.DefaultRequestHeaders.Remove("Authorization");
-                http.DefaultRequestHeaders.Add("Authorization", $"Bearer {_AuthenticationService.User.Token}");
+                await httpService.CheckJwt(new User { Email = _AuthenticationService.User.Email, Token = _AuthenticationService.User.Token, RefreshToken = _AuthenticationService.User.RefreshToken });
+                await _AuthenticationService.Initialize();
                 await ((CustomAuthenticationStateProvider)AuthenticationStateProvider).AuthenticateUser(_AuthenticationService.User.Email);
+                await AuthenticationService.Login(new User { Email = _AuthenticationService.User.Email, Token = _AuthenticationService.User.Token, RefreshToken = _AuthenticationService.User.RefreshToken });
                 await sessionStorage.SetAsync("Token", _AuthenticationService.User.Token);
                 await localStorage.SetAsync("RefreshToken", _AuthenticationService.User.RefreshToken);
                 Console.WriteLine(_AuthenticationService.User.RefreshToken);

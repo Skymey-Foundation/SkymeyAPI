@@ -11,6 +11,11 @@ using System.Text.Json;
 using System.Collections.Specialized;
 using System.Web;
 using SkymeyLib.Models.Users;
+using System.Globalization;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Linq;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace Skymey
 {
@@ -37,6 +42,7 @@ namespace Skymey
         User User { get; }
         Task Initialize();
         Task Login(string username, string password);
+        Task Login(User usr);
         Task Logout();
     }
 
@@ -75,6 +81,19 @@ namespace Skymey
             await _localStorageService.SetItem("user", User);
         }
 
+        public async Task Login(User usr)
+        {
+            User = new User
+            {
+                Token = usr.Token
+            ,
+                RefreshToken = usr.RefreshToken
+            ,
+                Email = usr.Email
+            };
+            await _localStorageService.SetItem("user", User);
+        }
+
         public async Task Logout()
         {
             User = null;
@@ -84,7 +103,8 @@ namespace Skymey
     public interface IHttpService
     {
         Task<T> Get<T>(string uri);
-        Task<T> Post<T>(string uri, object value);
+        Task<T> Post<T>(string uri, object? value);
+        Task CheckJwt(User user);
     }
 
     public class HttpService : IHttpService
@@ -93,6 +113,10 @@ namespace Skymey
         private NavigationManager _navigationManager;
         private ILocalStorageService _localStorageService;
         private IConfiguration _configuration;
+        private byte[]? _key;
+        private string? _Issuer;
+        private string? _Audience;
+
 
         public HttpService(
             HttpClient httpClient,
@@ -105,6 +129,9 @@ namespace Skymey
             _navigationManager = navigationManager;
             _localStorageService = localStorageService;
             _configuration = configuration;
+            _key = Encoding.ASCII.GetBytes(_configuration["Jwt:key"]);
+            _Issuer = _configuration["Jwt:Issuer"];
+            _Audience = _configuration["Jwt:Audience"];
         }
 
         public async Task<T> Get<T>(string uri)
@@ -113,29 +140,75 @@ namespace Skymey
             return await sendRequest<T>(request);
         }
 
-        public async Task<T> Post<T>(string uri, object value)
+        public async Task<T> Post<T>(string uri, object? value)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, uri);
-            request.Content = new StringContent(JsonSerializer.Serialize(value), Encoding.UTF8, "application/json");
+            if (value != null)
+            {
+                request.Content = new StringContent(JsonSerializer.Serialize(value), Encoding.UTF8, "application/json");
+            }
             return await sendRequest<T>(request);
         }
 
-        // helper methods
+        public async Task CheckJwt(User user)
+        {
+            TokenValidationParameters tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateAudience = false, //you might want to validate the audience and issuer depending on your use case
+                ValidateIssuer = false,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(_key),
+                ValidateLifetime = false //here we are saying that we don't care about the token's expiration date
+            };
+            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+            SecurityToken securityToken;
+            ClaimsPrincipal principal = tokenHandler.ValidateToken(user.Token, tokenValidationParameters, out securityToken);
+            var dataExp = DateTime.Parse(securityToken.ValidTo.ToString(), null, DateTimeStyles.RoundtripKind);
+            if ((dataExp - DateTime.UtcNow).TotalMinutes < 10)
+            {
+                HttpClient client = new HttpClient();
+                ValidateToken valid_token = new ValidateToken();
+                valid_token.Token = user.Token;
+                valid_token.RefreshToken = user.RefreshToken;
+                var token_resp = await client.PostAsJsonAsync("https://localhost:5003/api/SkymeyAPI/User/RefreshToken", valid_token);
+                var resp_r = JsonSerializer.Deserialize<UserResponse>(token_resp.Content.ReadAsStringAsync().Result);
+                user.Token = resp_r.AuthenticatedResponses.Token;
+                user.RefreshToken = resp_r.AuthenticatedResponses.RefreshToken;
+                User _usr = new User
+                {
+                    Token = user.Token
+        ,
+                    RefreshToken = user.RefreshToken
+        ,
+                    Email = user.Email
+                };
+                await _localStorageService.SetItem("user", _usr);
+                Console.WriteLine(resp_r);
+            }
+        }
 
+        // helper methods
         private async Task<T> sendRequest<T>(HttpRequestMessage request)
         {
             // add jwt auth header if user is logged in and request is to the api url
             var user = await _localStorageService.GetItem<User>("user");
+            if (user != null)
+            {
+                
+            }
             var isApiUrl = !request.RequestUri.IsAbsoluteUri;
-            if (user != null && isApiUrl)
+            if (user != null)
+            {
+                await CheckJwt(user);
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", user.Token);
+            }
 
             using var response = await _httpClient.SendAsync(request);
 
             // auto logout on 401 response
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
-                _navigationManager.NavigateTo("logout");
+                _navigationManager.NavigateTo("/", true);
                 return default;
             }
 

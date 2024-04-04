@@ -67,9 +67,10 @@ namespace SkymeyUserService.Controllers
 
         //[Authorize]
         //[Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
+        [AllowAnonymous]
         [HttpPost]
-        [Route("ValidateToken")]
-        public async Task<ObjectResult> ValidateToken(ValidateToken token)
+        [Route("RefreshToken")]
+        public async Task<ObjectResult> RefreshToken(ValidateToken token)
         {
             using (IUserResponse resp = await _userServiceLogin.RefreshToken(token)) {
                 return StatusCode(Convert.ToInt32(resp.StatusCode), resp);

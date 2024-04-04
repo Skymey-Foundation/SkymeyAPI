@@ -10,6 +10,8 @@ namespace SkymeyLib.Enums.Users.Register
     {
         [StringValue("/api/SkymeyUserService/Register")]
         RegisterURL,
+        [StringValue("/api/SkymeyUserService/RefreshToken")]
+        RefreshToken,
         [StringValue("User already exist")]
         AlreadyExist,
         [StringValue("Ok")]

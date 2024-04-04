@@ -1,6 +1,7 @@
 ﻿@page "/fetchdata"
 
 @inject WeatherForecastService ForecastService
+@inject IHttpService httpService
 @attribute [Authorize]
 
 <PageTitle>Weather forecast</PageTitle>
@@ -42,6 +43,9 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await ForecastService.GetForecastAsync(DateOnly.FromDateTime(DateTime.Now));
+        var response = await httpService.Post<WeatherForecast[]>("https://localhost:5006/api/User/Get", forecasts);
+
+            forecasts = await ForecastService.GetForecastAsync(DateOnly.FromDateTime(DateTime.Now));
+        
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -11,7 +12,7 @@ namespace SkymeyLib.Middleware
         private readonly RequestDelegate _next;
         private readonly IConfiguration _configuration;
 
-        public JWTMiddleware(RequestDelegate next, IConfiguration configuration)
+        public JWTMiddleware(RequestDelegate next, IConfiguration configuration) 
         {
             _next = next;
             _configuration = configuration;

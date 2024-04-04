@@ -20,31 +20,56 @@ using SkymeyLib.Models.Users.Register;
 using BlazorSchool.Components.Web.Core;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text;
+using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Skymey
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
             // Add services to the container.
             builder.Services.AddRazorPages();
-            builder.Services.AddSingleton<LoginModelValidation>();
             builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<RegisterModelValidation>());
             builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginModelValidation>());
             builder.Services.AddServerSideBlazor();
+            builder.Services.AddSingleton<WeatherForecastService>();
+            
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddBlazorComponents();
-            builder.Services.AddSingleton<WeatherForecastService>();
             builder.Services.AddTransient<IValidateToken, ValidateTokenInfo>();
-            builder.Services.AddTransient<HttpHandler>();
             builder.WebHost.UseUrls("http://localhost:5005;https://localhost:5006;");
-            builder.Services.AddHttpClient("ServerApi")
-                .ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.Configuration["ServerUrl"] ?? "https://localhost:5006"))
-                .AddHttpMessageHandler<HttpHandler>();
+            //builder.Services.AddHttpClient().AddHttpMessageHandler<HttpHandler>();
+            //builder.Services.AddHttpClient<IValidateToken, ValidateTokenInfo>()
+            //.AddHttpMessageHandler<HttpHandler>();
             builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("ServerApi"));
-
+            #region JWT
+            builder.Configuration.AddJsonFile("appsettingsMain.json");
+            builder.Configuration.AddJsonFile(builder.Configuration.GetSection("Config").Get<SkymeyLib.Models.Config>().Path);
+            builder.Services.AddAuthorizationCore();
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = builder.Configuration.GetValue<string>("JWT:Issuer"),
+                        ValidateAudience = true,
+                        ValidAudience = builder.Configuration.GetValue<string>("JWT:Audience"),
+                        ValidateLifetime = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetValue<string>("JWT:Key"))),
+                        ValidateIssuerSigningKey = true
+                    };
+                });
+            builder.Services.AddScoped<AuthenticationStateProvider,
+    CustomAuthenticationStateProvider>();
+            builder.Services.AddCascadingAuthenticationState();
+            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.Configuration["ServerUrl"] ?? "https://localhost:5006") });
+            #endregion
 
             //builder.Services.AddTransient<HttpHandler>();
             //builder.Services.AddTransient<FetchData>();
@@ -56,9 +81,17 @@ namespace Skymey
             //.AddHttpMessageHandler<HttpHandler>();
 
             //builder.Services.AddScoped<IHttpClientServiceImplementation, HttpClientFactoryService>();
+            builder.Services
+                .AddScoped<IAuthenticationService, AuthenticationService>()
+                .AddScoped<IUserService, UserService>()
+                .AddScoped<IHttpService, HttpService>()
+                .AddScoped<ILocalStorageService, LocalStorageService>();
+            builder.Services.AddTransient(x => {
+                var apiUrl = new Uri("https://localhost:5003/api/SkymeyAPI/user");
 
+                return new HttpClient() { BaseAddress = apiUrl };
+            });
             var app = builder.Build();
-
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
@@ -67,17 +100,23 @@ namespace Skymey
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection(); 
-            app.UseMiddleware<JWTMiddleware>();
-            
+            app.UseHttpsRedirection();
 
             app.UseStaticFiles();
+            app.UseMiddleware<JWTMiddleware>();
+
             app.UseRouting();
 
-            app.MapBlazorHub();
-            app.MapFallbackToPage("/_Host");
+            app.UseAuthentication();
+            app.UseAuthorization();
 
-            app.Run();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapBlazorHub();
+                endpoints.MapDefaultControllerRoute();
+                endpoints.MapFallbackToPage("/_Host");
+            });
+            await app.RunAsync();
         }
     }
 }

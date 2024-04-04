@@ -1,6 +1,10 @@
 ﻿@page "/user/login"
+@using System.Security.Claims
 @inject HttpClient http
-@inject LoginModelValidation valid
+@inject ProtectedLocalStorage localStorage
+@inject ProtectedSessionStorage sessionStorage
+@inject NavigationManager NavigationManager
+@inject IAuthenticationService AuthenticationService
 
 <PageTitle>Sign in</PageTitle>
 <div class="container-fluid login-content">
@@ -35,7 +39,7 @@
                     </EditForm>
                 </div>
                 <div class="nomember">
-                    <p class="text-center">Don’t have an Account yet? <a href="register">Sign up now</a></p>
+                    <p class="text-center">Don’t have an Account yet? <a href="user/register">Sign up now</a></p>
                 </div>
             </div>
         </div>
@@ -44,11 +48,25 @@
  
 @code {
     private LoginModel loginModel = new LoginModel();
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; }
     private async Task SubmitForm()
     {
         using (var response = await http.PostAsJsonAsync("https://localhost:5003/api/SkymeyAPI/User/Login", loginModel))
         {
-            var resp = JsonSerializer.Deserialize<UserResponse>(await response.Content.ReadAsStreamAsync());
+            using (var resp = JsonSerializer.Deserialize<UserResponse>(await response.Content.ReadAsStreamAsync()))
+            {
+                if (resp.ResponseType)
+                {
+                    await sessionStorage.SetAsync("Token", resp.AuthenticatedResponses.Token);
+                    await localStorage.SetAsync("RefreshToken", resp.AuthenticatedResponses.RefreshToken);
+                    await AuthenticationService.Login(loginModel.Email, loginModel.Password);
+                    AuthenticationService.User.Token = resp.AuthenticatedResponses.Token;
+                    AuthenticationService.User.RefreshToken = resp.AuthenticatedResponses.RefreshToken;
+                    NavigationManager.NavigateTo("/",true);
+                }
+            }
+
             Console.WriteLine("validate");
         }
     }

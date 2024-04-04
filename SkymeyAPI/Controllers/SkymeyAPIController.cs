@@ -8,6 +8,7 @@ using SkymeyLib.Enums.Users.Register;
 using SkymeyLib.Interfaces.IServers;
 using SkymeyLib.Interfaces.IUsers;
 using SkymeyLib.Models.HTTPRequests;
+using SkymeyLib.Models.Users;
 using SkymeyLib.Models.Users.Login;
 using SkymeyLib.Models.Users.Register;
 using SkymeyUserService.Interfaces.Users.Login;

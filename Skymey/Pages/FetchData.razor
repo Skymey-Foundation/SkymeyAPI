@@ -1,11 +1,7 @@
 ﻿@page "/fetchdata"
-@using Skymey.Data
-@using SkymeyLib.Interfaces.Users.Login
-@using SkymeyLib.Models.Users.Login
+
 @inject WeatherForecastService ForecastService
-@inject HttpClient httpClient
-@inject IValidateToken token
-@inject Blazored.LocalStorage.ILocalStorageService localStore
+@attribute [Authorize]
 
 <PageTitle>Weather forecast</PageTitle>
 
@@ -44,36 +40,8 @@ else
 @code {
     private WeatherForecast[]? forecasts;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        var a = await localStore.GetItemAsync<string>(nameof(token.RefreshToken));
-        if (a is not null)
-        {
-            Console.WriteLine(token.Token);
-            token.Token = "Ddd";
-            localStore.SetItemAsync<string>(nameof(token.RefreshToken), "d");
-            Console.WriteLine(token.Token);
-        }
-        else
-        {
-            localStore.SetItemAsync<string>(nameof(token.RefreshToken), "+TzuKHdLmzhQyLUD5yfRVOSKS1dKJ69MKdYJBOifj5w=");
-            token.RefreshToken = "+TzuKHdLmzhQyLUD5yfRVOSKS1dKJ69MKdYJBOifj5w=";
-            token.Token = "+TzuKHdLmzhQyLUD5yfRVOSKS1dKJ69MKdYJBOifj5w=";
-        }
-    }
-
     protected override async Task OnInitializedAsync()
     {
-        
-
         forecasts = await ForecastService.GetForecastAsync(DateOnly.FromDateTime(DateTime.Now));
-
-        //var httpClient2 = _httpClientFactory.CreateClient("ServerApi");
-        //var response = await httpClient2.GetFromJsonAsync<LoginModel>("https://localhost:5001/api/SkymeyUserService/GetResult");
-        var response2 = await httpClient.GetFromJsonAsync<LoginModel>("https://localhost:5001/api/SkymeyUserService/GetResult");
-
-        //    Console.WriteLine(response);
-
-        
     }
 }

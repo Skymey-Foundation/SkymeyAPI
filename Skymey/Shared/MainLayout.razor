@@ -1,37 +1,45 @@
-﻿@inherits LayoutComponentBase
-
+﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using System.Security.Claims
+@using System.Net.Http.Headers
+@inherits LayoutComponentBase
+@inject ProtectedLocalStorage localStorage
+@inject HttpClient http
+@inject ProtectedSessionStorage sessionStorage
+@inject IAuthenticationService _AuthenticationService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IAuthenticationService AuthenticationService
+@inject NavigationManager NavigationManager
 <PageTitle>Skymey</PageTitle>
-
-
-    
-<div class="container-fluid">
-        <div class="row">
-    <header class="col p-0">
-        <div class="top-row px-4">
-            <div class="col-2">
-                    <a class="navbar-brand" href=""><img src="/images/logo.png" height="40" width="50" alt="Skymey" /> Skymey</a>
-            </div>
-                <div class="input-group login-form text-center col">
-                    <span class="input-group-text" id="basic-addon1">
-                    <i class="bi bi-search"></i>
-                </span>
-  <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="basic-addon1">
-</div>
-<div class="col">
-                <div class="coin-stats float-end d-flex">
-                    <div class="coins  align-items-center d-flex text-center" data-bs-toggle="tooltip" title="SKY token. Perform actions and earn rewards!">
-                        <span class="pe-2">123</span><img src="/images/logo.png" height="24" width="30" alt="Skymey coins" />
-    </div>
-    <div class="logout  text-center">
-                        <a href="logout" title="Sign out" class="border-0 text-center exit" type="button" name="logout"><i class="bi bi-box-arrow-left"></i></a>
-    </div>
-                </div><!-- HTML to write -->
-            </div>
-        </div>
-</header>
-</div>
-</div>
+<AuthorizeView>
     <div class="container-fluid">
+        <div class="row">
+            <header class="col p-0">
+                <div class="top-row px-4">
+                    <div class="col-2">
+                        <a class="navbar-brand" href=""><img src="/images/logo.png" height="40" width="50" alt="Skymey" /> Skymey</a>
+                    </div>
+                    <div class="input-group login-form text-center col">
+                        <span class="input-group-text" id="basic-addon1">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="basic-addon1">
+                    </div>
+                    <div class="col">
+                        <div class="coin-stats float-end d-flex">
+                            <div class="coins  align-items-center d-flex text-center" data-bs-toggle="tooltip" title="SKY token. Perform actions and earn rewards!">
+                                <span class="pe-2">123</span><img src="/images/logo.png" height="24" width="30" alt="Skymey coins" />
+                            </div>
+                            <div class="logout  text-center">
+                                <a href="#" @onclick="Logout" title="Sign out" class="border-0 text-center exit" type="button" name="logout"><i class="bi bi-box-arrow-left"></i></a>
+                            </div>
+                        </div><!-- HTML to write -->
+                    </div>
+                </div>
+            </header>
+        </div>
+    </div>
+</AuthorizeView>
+<div class="container-fluid">
         <div class="row">
         <aside class="sidebar col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 col-xxl-1">
             <NavMenu />
@@ -43,3 +51,50 @@
     </div>
 </div>
     
+@code {
+    private async Task Logout()
+    {
+        Console.WriteLine("logout");
+        await sessionStorage.SetAsync("Token", "");
+        await localStorage.SetAsync("RefreshToken", "");
+        await AuthenticationService.Logout();
+        NavigationManager.NavigateTo("/", true);
+        StateHasChanged();
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_AuthenticationService.User == null)
+        {
+            Console.WriteLine("User null");
+            Console.WriteLine("Login");
+            await _AuthenticationService.Initialize();
+            if (firstRender)
+            {
+                if (_AuthenticationService.User != null)
+                {
+                    await ((CustomAuthenticationStateProvider)AuthenticationStateProvider).AuthenticateUser(_AuthenticationService.User.Email);
+                    http.DefaultRequestHeaders.Remove("Authorization");
+                    http.DefaultRequestHeaders.Add("Authorization", $"Bearer {_AuthenticationService.User.Token}");
+                    await sessionStorage.SetAsync("Token", _AuthenticationService.User.Token);
+                    await localStorage.SetAsync("RefreshToken", _AuthenticationService.User.RefreshToken);
+                    Console.WriteLine(_AuthenticationService.User.RefreshToken);
+                    StateHasChanged();
+                }
+            }
+        }
+        else
+        {
+            if (firstRender)
+            {
+                Console.WriteLine("User not null");
+                http.DefaultRequestHeaders.Remove("Authorization");
+                http.DefaultRequestHeaders.Add("Authorization", $"Bearer {_AuthenticationService.User.Token}");
+                await ((CustomAuthenticationStateProvider)AuthenticationStateProvider).AuthenticateUser(_AuthenticationService.User.Email);
+                await sessionStorage.SetAsync("Token", _AuthenticationService.User.Token);
+                await localStorage.SetAsync("RefreshToken", _AuthenticationService.User.RefreshToken);
+                Console.WriteLine(_AuthenticationService.User.RefreshToken);
+                StateHasChanged();
+            }
+        }
+    }
+                                }

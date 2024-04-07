@@ -365,3 +365,4 @@ FodyWeavers.xsd
 /SkymeyAPI/appsettings.json
 /SkymeyLib/appsettings.json
 /SkymeyLib/appsettings.Development.json
+/Skymey/wwwroot/images/api_key.psd

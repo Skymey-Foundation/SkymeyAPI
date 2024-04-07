@@ -1,7 +1,7 @@
 ﻿<div class="sidebar p-0 m-0 container-fluid">
     <div class="row p-0 m-0">
-        <div class="col-12">
-            <button title="Navigation menu" class="navbar-toggler float-end m-2" @onclick="ToggleNavMenu">
+        <div class="col-12 pe-4 py-2">
+            <button title="Navigation menu" class="navbar-toggler float-end" @onclick="ToggleNavMenu">
                 <span class="bi bi-list"></span>
             </button>
         </div>
@@ -27,18 +27,24 @@
         </div>
         <AuthorizeView>
         <NotAuthorized>
-        <div class="nav-item px-3">
+        <div class="nav-item px-3 @is_visible">
             <NavLink class="nav-link" href="user/login">
                 <span class="oi oi-list-rich" aria-hidden="true"></span> Login
             </NavLink>
         </div>
-        <div class="nav-item px-3">
+        <div class="nav-item px-3 @is_visible">
             <NavLink class="nav-link" href="user/register">
                 <span class="oi oi-list-rich" aria-hidden="true"></span> Register
             </NavLink>
         </div>
         </NotAuthorized>
         </AuthorizeView>
+        <div class="dropdown-divider"></div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="apidocs">
+                <span class="bi bi-file-earmark-bar-graph" aria-hidden="true"></span> API docs
+            </NavLink>
+        </div>
     </nav>
     </div>
 </div>
@@ -46,6 +52,8 @@
 </div>
 
 @code {
+    [Parameter]
+    public string is_visible { get; set; } = "d-none";
     private bool collapseNavMenu = true;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;

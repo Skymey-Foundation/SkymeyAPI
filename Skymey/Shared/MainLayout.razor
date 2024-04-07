@@ -16,10 +16,10 @@
         <div class="row">
             <header class="col p-0">
                 <div class="top-row">
-                    <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl-3 col-xxl-2 p-lg-3">
-                        <a class="navbar-brand" href=""><img src="/images/logo.png" height="40" width="50" alt="Skymey" /> Skymey</a>
+                    <div class="col-6 col-sm-4 col-md-3 col-lg-3 col-xl-3 col-xxl-2 ps-3 ps-xl-3">
+                        <a class="navbar-brand" href=""><img src="/images/logo.png" height="40" width="50" alt="Skymey" title="Skymey" /> Skymey</a>
                     </div>
-                <div class="col-md-6 col-lg-6 col-xl-6 col-xxl-6 offset-xxl-1 search">
+                <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xxl-6 offset-xxl-1 search">
                     <div class="input-group login-form text-center col">
                         <span class="input-group-text" id="basic-addon1">
                             <i class="bi bi-search"></i>
@@ -28,11 +28,11 @@
                     </div>
                     </div>
                 <AuthorizeView>
-                    <div class="col-6 col-sm-4 col-md-3 col-lg-3 col-xl-2 col-xxl-2">
+                    <div class="pe-4 pe-xl-0 col-6 col-sm-2 col-md-3 col-lg-3 col-xl-2 col-xxl-2 @is_visible">
                         <div class="coin-stats float-end d-flex">
-                            <div class="coins px-3 align-items-center d-flex text-center" data-bs-toggle="tooltip" title="SKY token. Perform actions and earn rewards!">
+                            @* <div class="coins px-3 align-items-center d-flex text-center" data-bs-toggle="tooltip" title="SKY token. Perform actions and earn rewards!">
                                 <span class="pe-2">123</span><img src="/images/logo.png" height="24" width="30" alt="Skymey coins" />
-                            </div>
+                            </div> *@
                             <div class="logout  text-center">
                                 <a href="#" @onclick="Logout" title="Sign out" class="border-0 text-center exit" type="button" name="logout"><i class="bi bi-box-arrow-left"></i></a>
                             </div>
@@ -46,16 +46,16 @@
 <div class="container-fluid">
         <div class="row">
         <div class="col-12 col-lg-3 col-xl-2 col-xxl-2 p-0">
-            
-            <NavMenu />
+            <NavMenu is_visible="@is_visible"/>
         </div>
-        <main class="content p-0 pb-4 pt-2 col-xs-10 offset-xs-1 col-lg-9 offset-lg-0 col-xl-8 offset-xl-1 col-xxl-8 offset-xxl-1">
+        <main class="content px-4 px-xl-0 p-0 pb-4 pt-2 col-xs-10 offset-xs-1 col-lg-9 offset-lg-0 col-xl-8 offset-xl-1 col-xxl-8 offset-xxl-1">
             @Body
         </main>
     </div>
 </div>
     
 @code {
+    private string is_visible { get; set; } = "d-none";
     private async Task Logout()
     {
         Console.WriteLine("logout");
@@ -85,6 +85,12 @@
                     await sessionStorage.SetAsync("Token", _AuthenticationService.User.Token);
                     await localStorage.SetAsync("RefreshToken", _AuthenticationService.User.RefreshToken);
                     Console.WriteLine(_AuthenticationService.User.RefreshToken);
+                    is_visible = "d-block";
+                    StateHasChanged();
+                }
+                else
+                {
+                    is_visible = "d-block";
                     StateHasChanged();
                 }
             }

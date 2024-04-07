@@ -50,9 +50,17 @@
     color: white;
 }
 
+.nav-item span {
+    width: 32px;
+    font-size: 1.1rem;
+}
+
 .sidebar {
     background-color: #27272A;
     border-right: 1px solid #80808038;
+}
+.nav-scrollable .dropdown-divider {
+    background-color: #bfbfbf4c;
 }
 
 @media (min-width: 992px) {

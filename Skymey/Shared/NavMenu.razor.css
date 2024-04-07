@@ -50,7 +50,12 @@
     color: white;
 }
 
-@media (min-width: 576px) {
+.sidebar {
+    background-color: #27272A;
+    border-right: 1px solid #80808038;
+}
+
+@media (min-width: 992px) {
     .navbar-toggler {
         display: none;
     }
@@ -64,5 +69,19 @@
         /* Allow sidebar to scroll for tall menus */
         height: calc(100vh - 3.5rem);
         overflow-y: auto;
+    }
+}
+@media (min-width: 992px) {
+    .sidebar {
+        height: 100vh;
+        position: sticky;
+        top: 0;
+        max-width: 250px;
+    }
+}
+
+@media (max-width: 992px) {
+    .sidebar {
+        max-width: auto;
     }
 }

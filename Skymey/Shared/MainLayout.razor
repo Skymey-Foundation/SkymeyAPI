@@ -53,6 +53,25 @@
         </main>
     </div>
 </div>
+<footer class="container-fluid">
+    <div class="row">
+        <div class="col-12 col-sm-3 col-md-3 col-lg-3 col-xl-2 d-none d-lg-block p-0 m-0">
+            <div class="footser-sidebar"></div>
+        </div>
+        <div class="px-4 px-xl-0 p-0 pb-4 pt-2 col-xs-10 offset-xs-1 col-lg-9 offset-lg-0 col-xl-8 offset-xl-1 col-xxl-8 offset-xxl-1">
+            <div class="dropdown-divider"></div>
+            <div class="mt-4">
+                <div class="float-start">
+                © @DateTime.Now.Year Skymey
+                </div>
+                <div class="float-end">
+                    <a href="#" title="Skymey Telegram" class="p-2"><i class="bi bi-telegram"></i></a>
+                    <a href="#" title="Skymey Twitter" class="p-2"><i class="bi bi-twitter-x"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
     
 @code {
     private string is_visible { get; set; } = "d-none";
@@ -76,17 +95,24 @@
             {
                 if (_AuthenticationService.User != null)
                 {
-                    await httpService.CheckJwt(new User { Email = _AuthenticationService.User.Email, Token = _AuthenticationService.User.Token, RefreshToken = _AuthenticationService.User.RefreshToken });
-                    await _AuthenticationService.Initialize(); 
-                    await ((CustomAuthenticationStateProvider)AuthenticationStateProvider).AuthenticateUser(_AuthenticationService.User.Email);
-                    await AuthenticationService.Login(new User { Email = _AuthenticationService.User.Email, Token = _AuthenticationService.User.Token, RefreshToken = _AuthenticationService.User.RefreshToken });
-                    http.DefaultRequestHeaders.Remove("Authorization");
-                    http.DefaultRequestHeaders.Add("Authorization", $"Bearer {_AuthenticationService.User.Token}");
-                    await sessionStorage.SetAsync("Token", _AuthenticationService.User.Token);
-                    await localStorage.SetAsync("RefreshToken", _AuthenticationService.User.RefreshToken);
-                    Console.WriteLine(_AuthenticationService.User.RefreshToken);
-                    is_visible = "d-block";
-                    StateHasChanged();
+                    if (_AuthenticationService.User.Token != null)
+                    {
+                        await httpService.CheckJwt(new User { Email = _AuthenticationService.User.Email, Token = _AuthenticationService.User.Token, RefreshToken = _AuthenticationService.User.RefreshToken });
+                        await _AuthenticationService.Initialize();
+                        await ((CustomAuthenticationStateProvider)AuthenticationStateProvider).AuthenticateUser(_AuthenticationService.User.Email);
+                        await AuthenticationService.Login(new User { Email = _AuthenticationService.User.Email, Token = _AuthenticationService.User.Token, RefreshToken = _AuthenticationService.User.RefreshToken });
+                        http.DefaultRequestHeaders.Remove("Authorization");
+                        http.DefaultRequestHeaders.Add("Authorization", $"Bearer {_AuthenticationService.User.Token}");
+                        await sessionStorage.SetAsync("Token", _AuthenticationService.User.Token);
+                        await localStorage.SetAsync("RefreshToken", _AuthenticationService.User.RefreshToken);
+                        Console.WriteLine(_AuthenticationService.User.RefreshToken);
+                        is_visible = "d-block";
+                        StateHasChanged();
+                    }
+                    else
+                    {
+                        await Logout();
+                    }
                 }
                 else
                 {

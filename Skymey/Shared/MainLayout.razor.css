@@ -52,6 +52,19 @@ header a {
         overflow: hidden;
         text-overflow: ellipsis;
     }
+.footser-sidebar {
+    max-width: 250px;
+    background-color: #27272A;
+    border-right: 1px solid #80808038;
+    height: 100%;
+}
+footer a i{
+    font-size: 14pt;
+    color: #DADADA;
+}
+footer .dropdown-divider {
+    background-color: #bfbfbf4c;
+}
 @media (max-width: 575px) {
     .search {
         display:none;

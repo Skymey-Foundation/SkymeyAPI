@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using SkymeyCryptoService.Models.Crypto;
+using SkymeyCryptoService.Services.Crypto;
 
 namespace SkymeyCryptoService.Controllers
 {
@@ -7,16 +9,19 @@ namespace SkymeyCryptoService.Controllers
     public class CryptoController : ControllerBase
     {
         private readonly ILogger<CryptoController> _logger;
+        private readonly ICryptoService _cryptoService;
 
-        public CryptoController(ILogger<CryptoController> logger)
+        public CryptoController(ILogger<CryptoController> logger, ICryptoService cryptoService)
         {
             _logger = logger;
+            _cryptoService = cryptoService;
         }
 
         [HttpGet]
-        public async Task GetActualPrices()
+        [Route("GetActualPrices")]
+        public HashSet<CryptoActualPricesView> GetActualPrices()
         {
-
+            return _cryptoService.GetActualPrices();
         }
     }
 }

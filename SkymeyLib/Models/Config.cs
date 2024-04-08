@@ -9,5 +9,7 @@ namespace SkymeyLib.Models
     public class Config
     {
         public required string Path { get; set; }
+        public static string MongoDbDatabase { get; set; }
+        public static string MongoClientConnection { get; set; }
     }
 }

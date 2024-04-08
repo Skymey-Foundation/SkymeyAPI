@@ -367,3 +367,4 @@ FodyWeavers.xsd
 /SkymeyLib/appsettings.Development.json
 /Skymey/wwwroot/images/api_key.psd
 /SkymeyCryptoService/appsettings.json
+/SkymeyCryptoService/appsettingsCryptoService.json

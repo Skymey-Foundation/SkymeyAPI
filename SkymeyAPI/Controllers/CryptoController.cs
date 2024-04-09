@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SkymeyCryptoService.Models.Crypto;
+using System.Collections.Generic;
 
 namespace SkymeyAPI.Controllers
 {
@@ -16,10 +18,13 @@ namespace SkymeyAPI.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("Get_order2")]
-        public string Get2()
+        [HttpGet("GetActualPrices")]
+        public async Task<HashSet<CryptoActualPricesView>> GetActualPrices()
         {
-            return "ok";
+            using (HttpClient http = new HttpClient())
+            {
+                return await http.GetFromJsonAsync<HashSet<CryptoActualPricesView>>("https://localhost:5016/api/Cryptoservice/GetActualPrices");
+            }
         }
     }
 }

@@ -6,12 +6,12 @@ namespace SkymeyCryptoService.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class CryptoController : ControllerBase
+    public class CryptoserviceController : ControllerBase
     {
-        private readonly ILogger<CryptoController> _logger;
+        private readonly ILogger<CryptoserviceController> _logger;
         private readonly ICryptoService _cryptoService;
 
-        public CryptoController(ILogger<CryptoController> logger, ICryptoService cryptoService)
+        public CryptoserviceController(ILogger<CryptoserviceController> logger, ICryptoService cryptoService)
         {
             _logger = logger;
             _cryptoService = cryptoService;

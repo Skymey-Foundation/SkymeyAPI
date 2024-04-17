@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Skymey", "Skymey\Skymey.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SkymeyProcessController", "SkymeyProcessController\SkymeyProcessController.csproj", "{4ECDD724-51FB-4ECF-B96E-CBC11AE5DEEB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkymeyCryptoService", "SkymeyCryptoService\SkymeyCryptoService.csproj", "{7B166783-0F9B-4D1E-B8D1-862848F772BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SkymeyCryptoService", "SkymeyCryptoService\SkymeyCryptoService.csproj", "{7B166783-0F9B-4D1E-B8D1-862848F772BD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

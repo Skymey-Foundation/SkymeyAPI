@@ -29,9 +29,19 @@
         <a href="" class="reload">Reload</a>
         <a class="dismiss">🗙</a>
     </div>
-
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/highlight.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/languages/csharp.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/languages/css.min.js"></script>
+    <script>
+        window.highlightSnippet = function () {
+            document.querySelectorAll('pre code').forEach((el) => {
+                hljs.highlightBlock(el);
+            });
+        }
+    </script>
     <script src="_framework/blazor.server.js"></script>
     <script src="~/js/popper.js"></script>
     <script src="~/js/bootstrap.min.js"></script>
+    
 </body>
 </html>

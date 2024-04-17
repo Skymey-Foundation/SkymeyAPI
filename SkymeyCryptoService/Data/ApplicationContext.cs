@@ -3,6 +3,7 @@ using MongoDB.Driver;
 using MongoDB.EntityFrameworkCore.Extensions;
 using SkymeyJobsLibs.Models.ActualPrices;
 using SkymeyLib.Models;
+using SkymeyLib.Models.Crypto.Tickers;
 using SkymeyLib.Models.Users.Table;
 
 namespace SkymeyCryptoService.Data
@@ -10,6 +11,7 @@ namespace SkymeyCryptoService.Data
     public class ApplicationContext : DbContext
     {
         public DbSet<CurrentPrices> CurrentPrices { get; init; }
+        public DbSet<CryptoTickers> CryptoTickers { get; init; }
         public static ApplicationContext Create(IMongoDatabase database) =>
             new(new DbContextOptionsBuilder<ApplicationContext>()
                 .UseMongoDB(database.Client, database.DatabaseNamespace.DatabaseName)
@@ -23,6 +25,7 @@ namespace SkymeyCryptoService.Data
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<CurrentPrices>().ToCollection("crypto_current_prices");
+            modelBuilder.Entity<CryptoTickers>().ToCollection("crypto_tickers");
         }
     }
 }

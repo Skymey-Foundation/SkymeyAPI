@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SkymeyCryptoService.Models.Crypto;
 using SkymeyCryptoService.Services.Crypto;
+using SkymeyLib.Models.Crypto.Tickers;
 
 namespace SkymeyCryptoService.Controllers
 {
@@ -22,6 +23,13 @@ namespace SkymeyCryptoService.Controllers
         public HashSet<CryptoActualPricesView> GetActualPrices()
         {
             return _cryptoService.GetActualPrices();
+        }
+
+        [HttpGet]
+        [Route("GetTickers")]
+        public HashSet<CryptoTickersView> GetTickers()
+        {
+            return _cryptoService.GetTickers();
         }
     }
 }

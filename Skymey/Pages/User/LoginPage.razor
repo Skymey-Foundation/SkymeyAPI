@@ -6,9 +6,10 @@
 @inject NavigationManager NavigationManager
 @inject IAuthenticationService AuthenticationService
 @inject IHttpService httpService
+@inject INameService nameSerivce
 
+<PageTitle>@nameSerivce.SignIn | @nameSerivce.Title</PageTitle>
 
-<PageTitle>Sign in</PageTitle>
 <AuthorizeView>
     <Authorized>
         <ReditectToHome />

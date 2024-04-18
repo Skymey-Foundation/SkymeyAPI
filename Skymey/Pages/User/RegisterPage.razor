@@ -4,9 +4,10 @@
 @inject ProtectedSessionStorage sessionStorage
 @inject NavigationManager NavigationManager
 @inject IAuthenticationService AuthenticationService
+@inject INameService nameSerivce
 
+<PageTitle>@nameSerivce.SignUp | @nameSerivce.Title</PageTitle>
 
-<PageTitle>Sign up</PageTitle>
 <AuthorizeView>
     <Authorized>
         <ReditectToHome />

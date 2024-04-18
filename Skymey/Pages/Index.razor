@@ -1,8 +1,9 @@
 ﻿@page "/"
 @using SkymeyLib.Models.Crypto.Tickers
 @inject IHttpService httpService
+@inject INameService nameSerivce
 
-<PageTitle>Index</PageTitle>
+<PageTitle>@nameSerivce.Index | @nameSerivce.Title</PageTitle>
 
 @if (crypto_tickers == null)
 {
@@ -31,7 +32,6 @@ else
 
 @code {
     private CryptoTickersView[]? crypto_tickers;
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)

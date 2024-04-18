@@ -27,6 +27,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Skymey.Controllers.Users;
 using Jering.Web.SyntaxHighlighters.HighlightJS;
+using Skymey.Services;
 
 namespace Skymey
 {
@@ -78,8 +79,10 @@ namespace Skymey
                 .AddHttpMessageHandler<HttpHandler>();
             builder.Services.AddControllers();
             builder.Services.AddHighlightJS();
+            builder.Services.AddSingleton<INameService, NameService>();
             ServiceProvider serviceProvider = builder.Services.BuildServiceProvider();
             IHighlightJSService highlightJSService = serviceProvider.GetRequiredService<IHighlightJSService>();
+            INameService nameService = serviceProvider.GetRequiredService<INameService>();
 
             var app = builder.Build();
             // Configure the HTTP request pipeline.

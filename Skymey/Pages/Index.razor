@@ -1,9 +1,43 @@
 ﻿@page "/"
+@using SkymeyLib.Models.Crypto.Tickers
+@inject IHttpService httpService
 
 <PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
+@if (crypto_tickers == null)
+{
 
-Welcome to your new app.
+}
+else
+{
+    <table class="table custom-table">
+        <thead>
+            <tr>
+                <th scope="col">Asset</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in crypto_tickers)
+            {
+                <tr scope="row">
+                    <td>
+                    @item.BaseAsset
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+@code {
+    private CryptoTickersView[]? crypto_tickers;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            crypto_tickers = await httpService.Get<CryptoTickersView[]>("https://localhost:5003/api/Crypto/GetTickers");
+            StateHasChanged();
+        }
+    }
+}

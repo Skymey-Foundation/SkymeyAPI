@@ -7,25 +7,83 @@
 
 @if (crypto_tickers == null)
 {
-
+    <table class="table custom-table mt-4">
+        <thead>
+            <tr class="TickerTr">
+                <td scope="col" class="trRank">Rank</td>
+                <td scope="col"></td>
+                <td scope="col">Asset</td>
+                <td scope="col">Price</td>
+                <td scope="col">24h%</td>
+                <td scope="col">Market Cap</td>
+                <td scope="col">FDV</td>
+                <td scope="col">Supply %</td>
+            </tr>
+        </thead>
+        <tbody>
+                <tr scope="row" class="TickerTr">
+                    <td></td>
+                <td class="tdImage"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+        </tbody>
+    </table>
 }
 else
 {
-    <table class="table custom-table">
+    <table class="table custom-table mt-4">
         <thead>
-            <tr>
-                <th scope="col">Asset</th>
+            <tr class="TickerTr">
+                <td scope="col" class="trRank">Rank</td>
+                <td scope="col"></td>
+                <td scope="col">Asset</td>
+                <td scope="col">Price</td>
+                <td scope="col">24h%</td>
+                <td scope="col">Market Cap</td>
+                <td scope="col">FDV</td>
+                <td scope="col">Supply %</td>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in crypto_tickers)
             {
-                <tr scope="row">
+                <tr scope="row" class="TickerTr">
                     <td>
-                    @item.Symbol
+                        1
+                    </td>
+                    <td class="tdImage">
+                        @{
+                            item.Symbol = item.Symbol + ".png";
+                        }
+                        <NavLink class="nav-link p-0" href="fetchdata">
+                            <img src="/images/crypto/@item.Symbol" height="40" width="40" title="@item.Name" alt="@item.Name" onerror="this.onerror=null; this.src='/images/crypto/btc.png'"/>
+                        </NavLink>
                     </td>
                     <td>
-                    @item.Name
+                        <NavLink class="nav-link p-0" href="fetchdata">
+                        <div class="TickerName">@item.Name</div>
+                        <div class="TickerTicker">@item.Symbol.Replace(".png", "")</div>
+                        </NavLink>
+                    </td>
+                    <td>
+                    123
+                    </td>
+                    <td>
+                    135324
+                    </td>
+                    <td>
+                    200000000
+                    </td>
+                    <td>
+                    210000000
+                    </td>
+                    <td>
+                    93.75%
                     </td>
                 </tr>
             }
@@ -40,6 +98,7 @@ else
         if (firstRender)
         {
             crypto_tickers = await httpService.Get<CryptoInstrumentsDB[]>("https://localhost:5003/api/Crypto/GetInstruments");
+            crypto_tickers = (from i in crypto_tickers select i).Skip(0).Take(100).ToArray();
             StateHasChanged();
         }
     }

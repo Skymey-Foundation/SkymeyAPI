@@ -1,3 +1,44 @@
 .table {
    color:white;
 }
+tbody, td, tfoot, th, thead, tr {
+    border-style:ridge;
+}
+
+.TickerName {
+
+}
+
+.TickerTicker {
+    color:#808080;
+}
+
+.TickerTr {
+    border-bottom: 1px solid #80808040;
+}
+
+.TickerTr img {
+    
+    height: 40px;
+}
+
+.TickerTr center {
+    height: 50px;
+    display: table-cell;
+    vertical-align: middle;
+}
+.tdImage {
+    width: 50px;
+}
+
+.TickerTr tr td {
+    height: 50px;
+}
+
+.trRank {
+    width:30px;
+}
+.nav-link {
+    padding: 0px;
+    margin:0px;
+}

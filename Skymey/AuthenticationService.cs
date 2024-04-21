@@ -152,38 +152,41 @@ namespace Skymey
 
         public async Task CheckJwt(User user)
         {
-            TokenValidationParameters tokenValidationParameters = new TokenValidationParameters
+            if (user.Token != null)
             {
-                ValidateAudience = false, //you might want to validate the audience and issuer depending on your use case
-                ValidateIssuer = false,
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(_key),
-                ValidateLifetime = false //here we are saying that we don't care about the token's expiration date
-            };
-            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
-            SecurityToken securityToken;
-            ClaimsPrincipal principal = tokenHandler.ValidateToken(user.Token, tokenValidationParameters, out securityToken);
-            var dataExp = DateTime.Parse(securityToken.ValidTo.ToString(), null, DateTimeStyles.RoundtripKind);
-            if ((dataExp - DateTime.UtcNow).TotalMinutes < 10)
-            {
-                HttpClient client = new HttpClient();
-                ValidateToken valid_token = new ValidateToken();
-                valid_token.Token = user.Token;
-                valid_token.RefreshToken = user.RefreshToken;
-                var token_resp = await client.PostAsJsonAsync("https://localhost:5003/api/SkymeyAPI/User/RefreshToken", valid_token);
-                var resp_r = JsonSerializer.Deserialize<UserResponse>(token_resp.Content.ReadAsStringAsync().Result);
-                user.Token = resp_r.AuthenticatedResponses.Token;
-                user.RefreshToken = resp_r.AuthenticatedResponses.RefreshToken;
-                User _usr = new User
+                TokenValidationParameters tokenValidationParameters = new TokenValidationParameters
                 {
-                    Token = user.Token
-        ,
-                    RefreshToken = user.RefreshToken
-        ,
-                    Email = user.Email
+                    ValidateAudience = false, //you might want to validate the audience and issuer depending on your use case
+                    ValidateIssuer = false,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(_key),
+                    ValidateLifetime = false //here we are saying that we don't care about the token's expiration date
                 };
-                await _localStorageService.SetItem("user", _usr);
-                Console.WriteLine(resp_r);
+                JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+                SecurityToken securityToken;
+                ClaimsPrincipal principal = tokenHandler.ValidateToken(user.Token, tokenValidationParameters, out securityToken);
+                var dataExp = DateTime.Parse(securityToken.ValidTo.ToString(), null, DateTimeStyles.RoundtripKind);
+                if ((dataExp - DateTime.UtcNow).TotalMinutes < 10)
+                {
+                    HttpClient client = new HttpClient();
+                    ValidateToken valid_token = new ValidateToken();
+                    valid_token.Token = user.Token;
+                    valid_token.RefreshToken = user.RefreshToken;
+                    var token_resp = await client.PostAsJsonAsync("https://localhost:5003/api/SkymeyAPI/User/RefreshToken", valid_token);
+                    var resp_r = JsonSerializer.Deserialize<UserResponse>(token_resp.Content.ReadAsStringAsync().Result);
+                    user.Token = resp_r.AuthenticatedResponses.Token;
+                    user.RefreshToken = resp_r.AuthenticatedResponses.RefreshToken;
+                    User _usr = new User
+                    {
+                        Token = user.Token
+            ,
+                        RefreshToken = user.RefreshToken
+            ,
+                        Email = user.Email
+                    };
+                    await _localStorageService.SetItem("user", _usr);
+                    Console.WriteLine(resp_r);
+                }
             }
         }
 

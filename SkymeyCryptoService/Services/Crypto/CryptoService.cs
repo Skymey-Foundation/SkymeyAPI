@@ -3,6 +3,7 @@ using SkymeyCryptoService.Data;
 using SkymeyCryptoService.Models.Crypto;
 using SkymeyJobsLibs.Models.ActualPrices;
 using SkymeyLib.Models;
+using SkymeyLib.Models.Crypto.CryptoInstruments;
 using SkymeyLib.Models.Crypto.Tickers;
 
 namespace SkymeyCryptoService.Services.Crypto
@@ -13,6 +14,7 @@ namespace SkymeyCryptoService.Services.Crypto
         private static ApplicationContext _db;
         public HashSet<CryptoActualPricesView> GetActualPrices();
         public HashSet<CryptoTickersView> GetTickers();
+        public HashSet<CryptoInstrumentsDB> GetInstruments();
     }
     public class CryptoService : ICryptoService
     {
@@ -36,6 +38,16 @@ namespace SkymeyCryptoService.Services.Crypto
             foreach (var item in resp_mongo)
             {
                 resp.Add(new CryptoTickersView { Ticker = item.Ticker, BaseAsset = item.BaseAsset, BaseAssetPrecision = item.BaseAssetPrecision, QuoteAsset = item.QuoteAsset, QuoteAssetPrecision = item.QuoteAssetPrecision, Update = item.Update });
+            }
+            return resp;
+        }
+        public HashSet<CryptoInstrumentsDB> GetInstruments()
+        {
+            var resp_mongo = (from i in _db.CryptoInstrumentsDB select i);
+            HashSet<CryptoInstrumentsDB> resp = new HashSet<CryptoInstrumentsDB>();
+            foreach (var item in resp_mongo)
+            {
+                resp.Add(new CryptoInstrumentsDB { Id = item.Id, Is_active = item.Is_active, Name = item.Name, Rank = item.Rank, Slug = item.Slug, Symbol = item.Symbol, Update = item.Update, Platform = item.Platform });
             }
             return resp;
         }

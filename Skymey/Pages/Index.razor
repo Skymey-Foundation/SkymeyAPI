@@ -1,5 +1,5 @@
 ﻿@page "/"
-@using SkymeyLib.Models.Crypto.Tickers
+@using SkymeyLib.Models.Crypto.CryptoInstruments
 @inject IHttpService httpService
 @inject INameService nameSerivce
 
@@ -22,21 +22,24 @@ else
             {
                 <tr scope="row">
                     <td>
-                    @item.BaseAsset
-                </td>
-            </tr>
+                    @item.Symbol
+                    </td>
+                    <td>
+                    @item.Name
+                    </td>
+                </tr>
             }
         </tbody>
     </table>
 }
 
 @code {
-    private CryptoTickersView[]? crypto_tickers;
+    private CryptoInstrumentsDB[]? crypto_tickers;
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            crypto_tickers = await httpService.Get<CryptoTickersView[]>("https://localhost:5003/api/Crypto/GetTickers");
+            crypto_tickers = await httpService.Get<CryptoInstrumentsDB[]>("https://localhost:5003/api/Crypto/GetInstruments");
             StateHasChanged();
         }
     }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SkymeyCryptoService.Models.Crypto;
+using SkymeyLib.Models.Crypto.CryptoInstruments;
 using SkymeyLib.Models.Crypto.Tickers;
 using System.Collections.Generic;
 
@@ -35,6 +36,16 @@ namespace SkymeyAPI.Controllers
             using (HttpClient http = new HttpClient())
             {
                 return await http.GetFromJsonAsync<HashSet<CryptoTickersView>>("https://localhost:5016/api/Cryptoservice/GetTickers");
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet("GetInstruments")]
+        public async Task<HashSet<CryptoInstrumentsDB>> GetInstruments()
+        {
+            using (HttpClient http = new HttpClient())
+            {
+                return await http.GetFromJsonAsync<HashSet<CryptoInstrumentsDB>>("https://localhost:5016/api/Cryptoservice/GetInstruments");
             }
         }
     }

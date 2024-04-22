@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using SkymeyLib.Models.Crypto
 @using SkymeyLib.Models.Crypto.CryptoInstruments
 @inject IHttpService httpService
 @inject INameService nameSerivce
@@ -71,7 +72,7 @@ else
                         </NavLink>
                     </td>
                     <td>
-                    123
+                        @Math.Round((from i in crypto_prices where i.Ticker == item.Symbol.Replace(".png", "") + "USDT" select i.Price).FirstOrDefault(), 3)
                     </td>
                     <td>
                     135324
@@ -93,12 +94,15 @@ else
 
 @code {
     private CryptoInstrumentsDB[]? crypto_tickers;
+    private CryptoActualPricesView[]? crypto_prices;
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             crypto_tickers = await httpService.Get<CryptoInstrumentsDB[]>("https://localhost:5003/api/Crypto/GetInstruments");
+            crypto_prices = await httpService.Get<CryptoActualPricesView[]>("https://localhost:5003/api/Crypto/GetActualPrices");
             crypto_tickers = (from i in crypto_tickers select i).Skip(0).Take(100).ToArray();
+            Console.WriteLine((from i in crypto_prices where i.Ticker == "LTC" + "USDT" select i.Price).FirstOrDefault());
             StateHasChanged();
         }
     }

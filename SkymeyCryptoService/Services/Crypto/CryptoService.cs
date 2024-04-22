@@ -10,16 +10,14 @@ namespace SkymeyCryptoService.Services.Crypto
 {
     public interface ICryptoService
     {
-        private static MongoClient _mongoClient;
-        private static ApplicationContext _db;
         public HashSet<CryptoActualPricesView> GetActualPrices();
         public HashSet<CryptoTickersView> GetTickers();
         public HashSet<CryptoInstrumentsDB> GetInstruments();
     }
     public class CryptoService : ICryptoService
     {
-        private static MongoClient _mongoClient = new MongoClient(Config.MongoClientConnection);
-        private static ApplicationContext _db = ApplicationContext.Create(_mongoClient.GetDatabase(Config.MongoDbDatabase));
+        static MongoClient _mongoClient = new MongoClient(Config.MongoClientConnection);
+        ApplicationContext _db = ApplicationContext.Create(_mongoClient.GetDatabase(Config.MongoDbDatabase));
 
         public HashSet<CryptoActualPricesView> GetActualPrices()
         {

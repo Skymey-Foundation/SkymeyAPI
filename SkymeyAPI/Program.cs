@@ -32,7 +32,7 @@ namespace SkymeyAPI
             builder.Configuration.AddJsonFile(builder.Configuration.GetSection("Config").Get<Config>().Path);
             
             builder.Services.AddSingleton<IUsers, Users>();
-            builder.Services.AddSingleton<ICrypto, Crypto>();
+            builder.Services.AddTransient<ICrypto, Crypto>();
             builder.Services.AddSingleton<IServers, Servers>();
             
             #region JWT

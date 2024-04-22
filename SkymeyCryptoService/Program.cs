@@ -36,7 +36,7 @@ builder.Services.AddSwaggerGen(swagger =>
 
 #endregion
 builder.Services.AddSingleton<IMainSettingsStocks, MainSettingsStocks>();
-builder.Services.AddScoped<ICryptoService, CryptoService>();
+builder.Services.AddTransient<ICryptoService, CryptoService>();
 using var serviceProvider = builder.Services.BuildServiceProvider();
 var BinanceService = serviceProvider.GetRequiredService<IMainSettingsStocks>();
 BinanceService.Init();

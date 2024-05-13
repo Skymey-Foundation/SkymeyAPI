@@ -101,7 +101,7 @@ else
         {
             crypto_tickers = await httpService.Get<CryptoInstrumentsDB[]>("https://localhost:5003/api/Crypto/GetInstruments");
             crypto_prices = await httpService.Get<CryptoActualPricesView[]>("https://localhost:5003/api/Crypto/GetActualPrices");
-            crypto_tickers = (from i in crypto_tickers select i).Skip(0).Take(100).ToArray();
+            crypto_tickers = (from i in crypto_tickers orderby i.Rank ascending select i).Skip(0).Take(100).ToArray();
             Console.WriteLine((from i in crypto_prices where i.Ticker == "LTC" + "USDT" select i.Price).FirstOrDefault());
             StateHasChanged();
         }

@@ -44,6 +44,10 @@ namespace SkymeyLib.Helpers.ProcessController.XML
                                 {
                                     processes.Directory = Convert.ToString(a2.InnerText.Replace("\r", "").Replace("\n", "").Replace("\t", ""));
                                 }
+                                if (a2.Name == "Link")
+                                {
+                                    processes.Link = Convert.ToString(a2.InnerText.Replace("\r", "").Replace("\n", "").Replace("\t", ""));
+                                }
                                 if (a2.Name == "FileName")
                                 {
                                     processes.FileName = Convert.ToString(a2.InnerText.Replace("\r", "").Replace("\n", "").Replace("\t", ""));
@@ -64,7 +68,7 @@ namespace SkymeyLib.Helpers.ProcessController.XML
                                 {
                                     st = true;
                                 }
-                                _processes.Add(new ProcessesListShow { Name = processes.Name, FileName = processes.FileName, Directory = processes.Directory, Agruments = processes.Agruments, Show = st });
+                                _processes.Add(new ProcessesListShow { Name = processes.Name, FileName = processes.FileName, Directory = processes.Directory, Agruments = processes.Agruments, Show = st, Link = processes.Link });
                             }
 
                         }
@@ -77,6 +81,9 @@ namespace SkymeyLib.Helpers.ProcessController.XML
 
         public List<ProcessesListShow> GetXmlData()
         {
+            foreach (var i in _processes) {
+                Console.WriteLine(i.Link);
+            }
             return _processes;
         }
 

@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 using SkymeyCryptoService.Data;
 using SkymeyCryptoService.Models.Crypto;
 using SkymeyJobsLibs.Models.ActualPrices;
@@ -21,7 +22,7 @@ namespace SkymeyCryptoService.Services.Crypto
 
         public HashSet<CryptoActualPricesView> GetActualPrices()
         {
-            var resp_mongo = (from i in _db.CurrentPrices select i);
+            var resp_mongo = (from i in _db.CurrentPrices select i).AsNoTracking();
             HashSet<CryptoActualPricesView> resp = new HashSet<CryptoActualPricesView>();
             foreach (var item in resp_mongo)
             {
@@ -31,7 +32,7 @@ namespace SkymeyCryptoService.Services.Crypto
         }
         public HashSet<CryptoTickersView> GetTickers()
         {
-            var resp_mongo = (from i in _db.CryptoTickers select i);
+            var resp_mongo = (from i in _db.CryptoTickers select i).AsNoTracking();
             HashSet<CryptoTickersView> resp = new HashSet<CryptoTickersView>();
             foreach (var item in resp_mongo)
             {
@@ -41,7 +42,7 @@ namespace SkymeyCryptoService.Services.Crypto
         }
         public HashSet<CryptoInstrumentsDB> GetInstruments()
         {
-            var resp_mongo = (from i in _db.CryptoInstrumentsDB select i);
+            var resp_mongo = (from i in _db.CryptoInstrumentsDB select i).AsNoTracking();
             HashSet<CryptoInstrumentsDB> resp = new HashSet<CryptoInstrumentsDB>();
             foreach (var item in resp_mongo)
             {

@@ -3,6 +3,7 @@ using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.AspNetCore.WebSockets;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SkymeyLib.Interfaces.HTTPRequests;
@@ -15,6 +16,7 @@ using SkymeyLib.Models.HTTPRequests;
 using SkymeyLib.Models.ServersSettings;
 using SkymeyUserService.Interfaces.Users.Login;
 using SkymeyUserService.Services.User.Login;
+using System.Net.WebSockets;
 using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -34,6 +36,7 @@ namespace SkymeyAPI
             builder.Services.AddSingleton<IUsers, Users>();
             builder.Services.AddTransient<ICrypto, Crypto>();
             builder.Services.AddSingleton<IServers, Servers>();
+
             
             #region JWT
             builder.Services.AddAuthorization();
@@ -103,7 +106,11 @@ namespace SkymeyAPI
 
             app.MapControllers();
 
+            app.UseWebSockets();
+
             app.Run();
         }
+        
     }
+
 }

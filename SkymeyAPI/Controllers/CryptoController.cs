@@ -9,6 +9,8 @@ using System.Net.WebSockets;
 using System.Net;
 using System.Text;
 using System;
+using System.Net.Http;
+using System.Text.Json;
 
 namespace SkymeyAPI.Controllers
 {
@@ -50,6 +52,18 @@ namespace SkymeyAPI.Controllers
             using (HttpClient http = new HttpClient())
             {
                 return await http.GetFromJsonAsync<HashSet<CryptoInstrumentsDB>>("https://localhost:5016/api/Cryptoservice/GetInstruments");
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost("AddInstruments")]
+        public async Task<object> AddInstrumentsAsync(CryptoInstrumentsDB instrument)
+        {
+            using (HttpClient http = new HttpClient())
+            {
+                JsonContent json = JsonContent.Create(instrument);
+                using var response = await http.PostAsync("https://localhost:5016/api/Cryptoservice/AddInstruments", json);
+                return response;
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using SkymeyCryptoService.Data;
 using SkymeyCryptoService.Models.Crypto;
@@ -14,6 +15,7 @@ namespace SkymeyCryptoService.Services.Crypto
         public HashSet<CryptoActualPricesView> GetActualPrices();
         public HashSet<CryptoTickersView> GetTickers();
         public HashSet<CryptoInstrumentsDB> GetInstruments();
+        public CryptoInstrumentsDB AddInstruments(CryptoInstrumentsDB instrument);
     }
     public class CryptoService : ICryptoService
     {
@@ -49,6 +51,13 @@ namespace SkymeyCryptoService.Services.Crypto
                 resp.Add(new CryptoInstrumentsDB { Id = item.Id, Is_active = item.Is_active, Name = item.Name, Rank = item.Rank, Slug = item.Slug, Symbol = item.Symbol, Update = item.Update, Platform = item.Platform });
             }
             return resp;
+        }
+        public CryptoInstrumentsDB AddInstruments(CryptoInstrumentsDB instrument)
+        {
+            instrument._id = ObjectId.GenerateNewId();
+            _db.Add(instrument);
+            _db.SaveChanges();
+            return instrument;
         }
     }
 }

@@ -69,6 +69,14 @@ namespace SkymeyLib.Models.Crypto.CryptoInstruments
         public int Is_active { get; set; }
         [JsonPropertyName("Platform")]
         public PlatformDB? Platform { get; set; }
+        [JsonPropertyName("MaxSupply")]
+        public string? MaxSupply { get; set; }
+        [JsonPropertyName("CurrentSupply")]
+        public string? CurrentSupply { get; set; }
+        [JsonPropertyName("Mcap")]
+        public string? Mcap { get; set; }
+        [JsonPropertyName("FDV")]
+        public string? FDV { get; set; }
         [JsonPropertyName("Update")]
         public DateTime Update { get; set; }
     }

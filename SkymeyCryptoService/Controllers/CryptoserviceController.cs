@@ -39,5 +39,12 @@ namespace SkymeyCryptoService.Controllers
         {
             return _cryptoService.GetInstruments();
         }
+
+        [HttpPost]
+        [Route("AddInstruments")]
+        public CryptoInstrumentsDB AddInstruments(CryptoInstrumentsDB instrument)
+        {
+            return _cryptoService.AddInstruments(instrument);
+        }
     }
 }

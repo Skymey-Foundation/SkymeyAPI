@@ -7,6 +7,7 @@ using SkymeyJobsLibs.Models.ActualPrices;
 using SkymeyLib.Models;
 using SkymeyLib.Models.Crypto.CryptoInstruments;
 using SkymeyLib.Models.Crypto.Tickers;
+using SkymeyLib.Models.Crypto.Tokens;
 
 namespace SkymeyCryptoService.Services.Crypto
 {
@@ -15,7 +16,9 @@ namespace SkymeyCryptoService.Services.Crypto
         public HashSet<CryptoActualPricesView> GetActualPrices();
         public HashSet<CryptoTickersView> GetTickers();
         public HashSet<CryptoInstrumentsDB> GetInstruments();
+        public CryptoInstrumentsDB GetInstruments(string ticker);
         public CryptoInstrumentsDB AddInstruments(CryptoInstrumentsDB instrument);
+        public Tokens AddContract(Tokens contract);
     }
     public class CryptoService : ICryptoService
     {
@@ -52,12 +55,25 @@ namespace SkymeyCryptoService.Services.Crypto
             }
             return resp;
         }
+        public CryptoInstrumentsDB GetInstruments(string ticker)
+        {
+            return (from i in _db.CryptoInstrumentsDB where i.Symbol == ticker select i).AsNoTracking().FirstOrDefault();
+        }
         public CryptoInstrumentsDB AddInstruments(CryptoInstrumentsDB instrument)
         {
             instrument._id = ObjectId.GenerateNewId();
-            _db.Add(instrument);
+            _db.CryptoInstrumentsDB.Add(instrument);
+            _db.Tokens.Add(new Tokens { _id = ObjectId.GenerateNewId(),  InstrumentId = instrument.Id, Blockchain = instrument.Platform.Name, Contract = instrument.Platform.Token_address, Update = DateTime.UtcNow });
             _db.SaveChanges();
             return instrument;
+        }
+        public Tokens AddContract(Tokens contract)
+        {
+            contract._id = ObjectId.GenerateNewId();
+            contract.Update = DateTime.UtcNow;
+            _db.Tokens.Add(contract);
+            _db.SaveChanges();
+            return contract;
         }
     }
 }

@@ -3,6 +3,7 @@ using SkymeyCryptoService.Models.Crypto;
 using SkymeyCryptoService.Services.Crypto;
 using SkymeyLib.Models.Crypto.CryptoInstruments;
 using SkymeyLib.Models.Crypto.Tickers;
+using SkymeyLib.Models.Crypto.Tokens;
 
 namespace SkymeyCryptoService.Controllers
 {
@@ -40,11 +41,25 @@ namespace SkymeyCryptoService.Controllers
             return _cryptoService.GetInstruments();
         }
 
+        [HttpGet]
+        [Route("GetInstruments/{ticker}")]
+        public CryptoInstrumentsDB GetInstruments(string ticker)
+        {
+            return _cryptoService.GetInstruments(ticker);
+        }
+
         [HttpPost]
         [Route("AddInstruments")]
         public CryptoInstrumentsDB AddInstruments(CryptoInstrumentsDB instrument)
         {
             return _cryptoService.AddInstruments(instrument);
+        }
+
+        [HttpPost]
+        [Route("AddContract")]
+        public Tokens AddContract(Tokens contract)
+        {
+            return _cryptoService.AddContract(contract);
         }
     }
 }

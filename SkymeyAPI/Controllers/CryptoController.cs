@@ -11,6 +11,7 @@ using System.Text;
 using System;
 using System.Net.Http;
 using System.Text.Json;
+using SkymeyLib.Models.Crypto.Tokens;
 
 namespace SkymeyAPI.Controllers
 {
@@ -56,6 +57,16 @@ namespace SkymeyAPI.Controllers
         }
 
         [AllowAnonymous]
+        [HttpGet("GetInstruments/{ticker}")]
+        public async Task<CryptoInstrumentsDB> GetInstruments(string ticker)
+        {
+            using (HttpClient http = new HttpClient())
+            {
+                return await http.GetFromJsonAsync<CryptoInstrumentsDB>("https://localhost:5016/api/Cryptoservice/GetInstruments/" + ticker);
+            }
+        }
+
+        [AllowAnonymous]
         [HttpPost("AddInstruments")]
         public async Task<object> AddInstrumentsAsync(CryptoInstrumentsDB instrument)
         {
@@ -63,6 +74,18 @@ namespace SkymeyAPI.Controllers
             {
                 JsonContent json = JsonContent.Create(instrument);
                 using var response = await http.PostAsync("https://localhost:5016/api/Cryptoservice/AddInstruments", json);
+                return response;
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost("AddContract")]
+        public async Task<object> AddContract(Tokens contract)
+        {
+            using (HttpClient http = new HttpClient())
+            {
+                JsonContent json = JsonContent.Create(contract);
+                using var response = await http.PostAsync("https://localhost:5016/api/Cryptoservice/AddContract", json);
                 return response;
             }
         }

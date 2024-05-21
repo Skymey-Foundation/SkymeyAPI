@@ -21,12 +21,12 @@ namespace SkymeyUserService.Services.User.TokenService
             _Audience = _configuration["Jwt:Audience"];
         }
 
-        public string GenerateJwtToken(string userName)
+        public string GenerateJwtToken(string userName, string Role)
         {
             JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
             SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[] { new Claim("id", userName) }),
+                Subject = new ClaimsIdentity(new[] { new Claim("id", userName), new Claim("Role" , Role) }),
                 Expires = DateTime.UtcNow.AddMinutes(20),
                 Issuer = _Issuer,
                 Audience = _Audience,

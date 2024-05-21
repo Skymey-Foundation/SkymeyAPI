@@ -59,14 +59,15 @@ else
                     </td>
                     <td class="tdImage">
                         @{
+                            string link = "detail/" + item.Symbol;
                             item.Symbol = item.Symbol + ".png";
                         }
-                        <NavLink class="nav-link p-0" href="fetchdata">
+                        <NavLink class="nav-link p-0" href="@link">
                             <img src="/images/crypto/@item.Symbol" height="40" width="40" title="@item.Name" alt="@item.Name" onerror="this.onerror=null; this.src='/images/crypto/btc.png'"/>
                         </NavLink>
                     </td>
                     <td>
-                        <NavLink class="nav-link p-0" href="fetchdata">
+                        <NavLink class="nav-link p-0" href="@link">
                         <div class="TickerName">@item.Name</div>
                         <div class="TickerTicker">@item.Symbol.Replace(".png", "")</div>
                         </NavLink>

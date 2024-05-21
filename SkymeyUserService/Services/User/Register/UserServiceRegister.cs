@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SkymeyLib.Enums;
 using SkymeyLib.Enums.Users.Register;
 using SkymeyLib.Models.Users;
+using SkymeyLib.Models.Users.Groups;
 using SkymeyLib.Models.Users.Login;
 using SkymeyLib.Models.Users.Register;
 using SkymeyLib.Models.Users.Table;
@@ -52,6 +53,11 @@ namespace SkymeyUserService.Services.User.Register
                 {
 
                     var refreshToken = _tokenService.GenerateRefreshToken();
+                    await _db.USR_GRP_003.AddAsync(new USR_GRP_003
+                    {
+                        Email = registerModel.Email,
+                        GRP_002_ID = "1"
+                    });
                     await _db.USR_001.AddAsync(new USR_001
                     {
                         Email = registerModel.Email,
@@ -60,7 +66,7 @@ namespace SkymeyUserService.Services.User.Register
                         RefreshTokenExpiryTime = DateTime.Now.AddDays(7)
                     });
                     await _db.SaveChangesAsync();
-                    _userResponse.AuthenticatedResponses = new AuthenticatedResponse { Token = _tokenService.GenerateJwtToken(registerModel.Email), RefreshToken = refreshToken };
+                    _userResponse.AuthenticatedResponses = new AuthenticatedResponse { Token = _tokenService.GenerateJwtToken(registerModel.Email, "1"), RefreshToken = refreshToken };
                 }
             }
             return _userResponse;
@@ -69,7 +75,6 @@ namespace SkymeyUserService.Services.User.Register
         #region Dispose, Ctor
         public void Dispose()
         {
-            _userResponse.Dispose();
         }
         ~UserServiceRegister()
         {

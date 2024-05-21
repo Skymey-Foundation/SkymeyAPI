@@ -61,12 +61,13 @@ namespace SkymeyUserService.Services.User.Login
             {
                 if (_USR_001 != null)
                 {
-                    var refreshToken = _tokenService.GenerateRefreshToken();
+                    string? refreshToken = _tokenService.GenerateRefreshToken();
                     _USR_001.RefreshToken = refreshToken;
                     _USR_001.RefreshTokenExpiryTime = DateTime.Now.AddDays(60);
                     _db.USR_001.Update(_USR_001);
+                    var role = (from i in _db.USR_GRP_003 select i).FirstOrDefault();
                     await _db.SaveChangesAsync();
-                    _userResponse.AuthenticatedResponses = new AuthenticatedResponse { Token = _tokenService.GenerateJwtToken(_USR_001.Email), RefreshToken = refreshToken };
+                    _userResponse.AuthenticatedResponses = new AuthenticatedResponse { Token = _tokenService.GenerateJwtToken(_USR_001.Email, role.GRP_002_ID), RefreshToken = refreshToken };
                 }
             }
         }
@@ -109,8 +110,6 @@ namespace SkymeyUserService.Services.User.Login
         #region Dispose, Ctor
         public void Dispose()
         {
-            _USR_001 = null;
-            _userResponse.Dispose();
         }
         ~UserServiceLogin()
         {

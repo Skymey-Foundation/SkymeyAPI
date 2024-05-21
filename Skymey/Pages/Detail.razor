@@ -1,0 +1,42 @@
+﻿@page "/detail/{Symbol}"
+@using System.IdentityModel.Tokens.Jwt
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject IHttpService httpService
+@inject ProtectedSessionStorage sessionStorage
+
+    @if(Instrument != null)
+    {
+        <h1>@Instrument.Name</h1>
+    }
+@if (Role == "2")
+{
+    <h2>Admin</h2>
+}
+
+@code {
+    [Parameter]
+    public string Symbol { get; set; } = default!;
+
+    private CryptoInstrumentsDB? Instrument;
+    private string? Role { get; set; } = "User";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Instrument = await httpService.Get<CryptoInstrumentsDB>("https://localhost:5003/api/Crypto/GetInstruments/" + Symbol);
+            var handler = new JwtSecurityTokenHandler();
+            var authHeader = await sessionStorage.GetAsync<string>("Token");
+            string? token = authHeader.Value;
+            if (token.Length != 0)
+            {
+                Console.WriteLine("[" + token + "]5");
+                var jsonToken = handler.ReadToken(token);
+                var tokenS = handler.ReadToken(token) as JwtSecurityToken;
+                Role = tokenS.Claims.First(claim => claim.Type == "Role").Value;
+                Console.WriteLine(Role);
+            }
+            StateHasChanged();
+        }
+    }
+}

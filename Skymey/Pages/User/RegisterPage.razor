@@ -59,8 +59,10 @@
     {
         using (var response = await http.PostAsJsonAsync("https://localhost:5003/api/SkymeyAPI/User/Register", registerModel))
         {
+            Console.WriteLine(response);
             using (var resp = JsonSerializer.Deserialize<UserResponse>(await response.Content.ReadAsStreamAsync()))
             {
+                Console.WriteLine(resp);
                 if (resp.ResponseType)
                 {
                     await sessionStorage.SetAsync("Token", resp.AuthenticatedResponses.Token);

@@ -2,6 +2,7 @@
 using MongoDB.Driver;
 using MongoDB.EntityFrameworkCore.Extensions;
 using SkymeyLib.Models;
+using SkymeyLib.Models.Users.Groups;
 using SkymeyLib.Models.Users.Table;
 
 namespace SkymeyUserService.Data
@@ -9,10 +10,12 @@ namespace SkymeyUserService.Data
     public class ApplicationContext : DbContext
     {
         public DbSet<USR_001> USR_001 { get; init; }
+        public DbSet<USR_GRP_003> USR_GRP_003 { get; init; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<USR_001>().ToCollection("USR_001");
+            modelBuilder.Entity<USR_GRP_003>().ToCollection("USR_GRP_003");
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

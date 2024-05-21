@@ -72,6 +72,10 @@
                     AuthenticationService.User.RefreshToken = resp.AuthenticatedResponses.RefreshToken;
                     NavigationManager.NavigateTo("/",true);
                 }
+                else
+                {
+                    Console.WriteLine(resp.Response);
+                }
             }
 
             Console.WriteLine("validate");

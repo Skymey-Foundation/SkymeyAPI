@@ -31,6 +31,7 @@ namespace SkymeyAPI.Controllers
         [Route("Login")]
         public async Task<ObjectResult> Login(LoginModel loginModel)
         {
+            Console.WriteLine(_servers.UsersSettings.Server+ " " + _servers.UsersSettings.Port + " " + UserLogin.LoginUrl.StringValue() + " " + Method.Post + " " + loginModel.Email + " " + loginModel.Password);
             using (RestHTTP<UserResponse> respHTTP = new RestHTTP<UserResponse>(_servers.UsersSettings.Server, _servers.UsersSettings.Port, UserLogin.LoginUrl.StringValue(), Method.Post, loginModel))
             {
                 var resp = await respHTTP.Send();
@@ -47,7 +48,7 @@ namespace SkymeyAPI.Controllers
 
         [HttpPost]
         [Route("Register")]
-        public async Task<ObjectResult> Login(RegisterModel registerModel)
+        public async Task<ObjectResult> Register(RegisterModel registerModel)
         {
             using (RestHTTP<UserResponse> respHTTP = new RestHTTP<UserResponse>(_servers.UsersSettings.Server, _servers.UsersSettings.Port, UserRegister.RegisterURL.StringValue(), Method.Post, registerModel))
             {

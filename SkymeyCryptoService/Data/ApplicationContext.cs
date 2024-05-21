@@ -5,6 +5,7 @@ using SkymeyJobsLibs.Models.ActualPrices;
 using SkymeyLib.Models;
 using SkymeyLib.Models.Crypto.CryptoInstruments;
 using SkymeyLib.Models.Crypto.Tickers;
+using SkymeyLib.Models.Crypto.Tokens;
 using SkymeyLib.Models.Users.Table;
 
 namespace SkymeyCryptoService.Data
@@ -13,6 +14,7 @@ namespace SkymeyCryptoService.Data
     {
         public DbSet<CurrentPrices> CurrentPrices { get; init; }
         public DbSet<CryptoTickers> CryptoTickers { get; init; }
+        public DbSet<Tokens> Tokens { get; init; }
         public DbSet<CryptoInstrumentsDB> CryptoInstrumentsDB { get; init; }
         public static ApplicationContext Create(IMongoDatabase database) =>
             new(new DbContextOptionsBuilder<ApplicationContext>()
@@ -29,6 +31,7 @@ namespace SkymeyCryptoService.Data
             modelBuilder.Entity<CurrentPrices>().ToCollection("crypto_current_prices");
             modelBuilder.Entity<CryptoTickers>().ToCollection("crypto_tickers");
             modelBuilder.Entity<CryptoInstrumentsDB>().ToCollection("crypto_instruments");
+            modelBuilder.Entity<Tokens>().ToCollection("crypto_contracts");
         }
     }
 }

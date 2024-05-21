@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SkymeyCryptoService.Models.Crypto;
 using SkymeyCryptoService.Services.Crypto;
+using SkymeyLib.Models.Crypto.Blockchains;
 using SkymeyLib.Models.Crypto.CryptoInstruments;
 using SkymeyLib.Models.Crypto.Tickers;
 using SkymeyLib.Models.Crypto.Tokens;
@@ -60,6 +61,20 @@ namespace SkymeyCryptoService.Controllers
         public Tokens AddContract(Tokens contract)
         {
             return _cryptoService.AddContract(contract);
+        }
+
+        [HttpPost]
+        [Route("AddBlockchain")]
+        public BLOCK_004 AddBlockchain(BLOCK_004 blockchain)
+        {
+            return _cryptoService.AddBlockchain(blockchain);
+        }
+
+        [HttpGet]
+        [Route("GetBlockchains")]
+        public async Task<List<BLOCK_004>> GetBlockchains()
+        {
+            return _cryptoService.GetBlockchains();
         }
     }
 }

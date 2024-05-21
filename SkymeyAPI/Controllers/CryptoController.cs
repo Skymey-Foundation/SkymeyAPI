@@ -12,6 +12,7 @@ using System;
 using System.Net.Http;
 using System.Text.Json;
 using SkymeyLib.Models.Crypto.Tokens;
+using SkymeyLib.Models.Crypto.Blockchains;
 
 namespace SkymeyAPI.Controllers
 {
@@ -87,6 +88,28 @@ namespace SkymeyAPI.Controllers
                 JsonContent json = JsonContent.Create(contract);
                 using var response = await http.PostAsync("https://localhost:5016/api/Cryptoservice/AddContract", json);
                 return response;
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost("AddBlockchain")]
+        public async Task<object> AddBlockchain(BLOCK_004 blockchain)
+        {
+            using (HttpClient http = new HttpClient())
+            {
+                JsonContent json = JsonContent.Create(blockchain);
+                using var response = await http.PostAsync("https://localhost:5016/api/Cryptoservice/AddBlockchain", json);
+                return response;
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet("GetBlockchains")]
+        public async Task<List<BLOCK_004>> GetBlockchains()
+        {
+            using (HttpClient http = new HttpClient())
+            {
+                return await http.GetFromJsonAsync<List<BLOCK_004>>("https://localhost:5016/api/Cryptoservice/GetBlockchains/");
             }
         }
 

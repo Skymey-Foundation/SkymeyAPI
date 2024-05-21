@@ -56,7 +56,7 @@ namespace SkymeyLib.Models.Crypto.CryptoInstruments
         [JsonPropertyName("_id")]
         public ObjectId? _id { get; set; }
         [JsonPropertyName("Id")]
-        public int? Id { get; set; }
+        public int Id { get; set; }
         [JsonPropertyName("Rank")]
         public int Rank { get; set; }
         [JsonPropertyName("Name")]

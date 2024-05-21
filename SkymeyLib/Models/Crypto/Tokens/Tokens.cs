@@ -16,7 +16,7 @@ namespace SkymeyLib.Models.Crypto.Tokens
         [JsonPropertyName("_id")]
         public ObjectId? _id { get; set; }
         [JsonPropertyName("InstrumentId")]
-        public int? InstrumentId { get; set; }
+        public int InstrumentId { get; set; }
         [JsonPropertyName("Blockchain")]
         public string Blockchain { get; set; }
         [JsonPropertyName("Contract")]

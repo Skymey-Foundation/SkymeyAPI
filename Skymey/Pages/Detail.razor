@@ -1,8 +1,11 @@
 ﻿@page "/detail/{Symbol}"
 @using System.IdentityModel.Tokens.Jwt
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using SkymeyLib.Models.Crypto.Blockchains
+@using SkymeyLib.Models.Crypto.Tokens
 @inject IHttpService httpService
 @inject ProtectedSessionStorage sessionStorage
+@inject IJSRuntime js
 
     @if(Instrument != null)
     {
@@ -11,20 +14,71 @@
 @if (Role == "2")
 {
     <h2>Admin</h2>
-}
 
+
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Launch demo modal
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">@Instrument.Name contract</h5>
+                    <button type="button" class="btn-clos1e" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                </div>
+                <div class="modal-body">
+                    <label for="exampleFormControlInput1" class="form-label">Contract:</label>
+                    <input type="text" id="exampleFormControlInput1" class="form-control" @bind="Contract" @bind:event="oninput" placeholder="contract..." autocomplete="off" />
+
+                    <label for="exampleFormControlInput2" class="form-label">Blockchain:</label>
+                    <select id="exampleFormControlInput2" aria-labelledby="dropdownMenuButton3" placeholder="Pick a state..." @bind="SelectedBlockchain">
+                        <option value="">
+                            <div class="dropdown-item">
+                                Select blockchain
+                            </div>
+                        </option>
+                            @foreach (var item in blockchains)
+                            {
+                                <option value="@item.Title">
+                                    <div class="dropdown-item" >
+                                        @item.Title | @item.Symbol
+                                    </div>
+                                </option>
+                            }
+                        </select>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" @onclick="AddContract">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 @code {
     [Parameter]
     public string Symbol { get; set; } = default!;
 
     private CryptoInstrumentsDB? Instrument;
+    private List<CryptoInstrumentsDB>? Instruments;
+    private List<BLOCK_004>? blockchains;
+    private string? SelectedBlockchain { get; set; } = default!;
+    private string? Contract { get; set; } = default!;
     private string? Role { get; set; } = "User";
+    IJSObjectReference JsObjectRef { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             Instrument = await httpService.Get<CryptoInstrumentsDB>("https://localhost:5003/api/Crypto/GetInstruments/" + Symbol);
+            Instruments = await httpService.Get<List<CryptoInstrumentsDB>>("https://localhost:5003/api/Crypto/GetInstruments/");
+            blockchains = await httpService.Get<List<BLOCK_004>>("https://localhost:5003/api/Crypto/GetBlockchains/");
             var handler = new JwtSecurityTokenHandler();
             var authHeader = await sessionStorage.GetAsync<string>("Token");
             string? token = authHeader.Value;
@@ -37,6 +91,18 @@
                 Console.WriteLine(Role);
             }
             StateHasChanged();
+        }
+    }
+
+    private async Task AddContract()
+    {
+        if (SelectedBlockchain != null)
+        {
+            if (SelectedBlockchain.Length > 0)
+            {
+                await httpService.Post<Tokens>("https://localhost:5003/api/Crypto/AddContract/", new Tokens { Blockchain = SelectedBlockchain, Contract = Contract, InstrumentId = Instrument.Id });
+                await js.InvokeVoidAsync("CloseModal", "#exampleModal");
+            }
         }
     }
 }

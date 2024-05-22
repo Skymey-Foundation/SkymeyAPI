@@ -80,15 +80,22 @@
             Instruments = await httpService.Get<List<CryptoInstrumentsDB>>("https://localhost:5003/api/Crypto/GetInstruments/");
             blockchains = await httpService.Get<List<BLOCK_004>>("https://localhost:5003/api/Crypto/GetBlockchains/");
             var handler = new JwtSecurityTokenHandler();
-            var authHeader = await sessionStorage.GetAsync<string>("Token");
-            string? token = authHeader.Value;
-            if (token.Length != 0)
+            try
             {
-                Console.WriteLine("[" + token + "]5");
-                var jsonToken = handler.ReadToken(token);
-                var tokenS = handler.ReadToken(token) as JwtSecurityToken;
-                Role = tokenS.Claims.First(claim => claim.Type == "Role").Value;
-                Console.WriteLine(Role);
+                var authHeader = await sessionStorage.GetAsync<string>("Token");
+                string? token = authHeader.Value;
+                if (token.Length != 0)
+                {
+                    Console.WriteLine("[" + token + "]5");
+                    var jsonToken = handler.ReadToken(token);
+                    var tokenS = handler.ReadToken(token) as JwtSecurityToken;
+                    Role = tokenS.Claims.First(claim => claim.Type == "Role").Value;
+                    Console.WriteLine(Role);
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
             }
             StateHasChanged();
         }

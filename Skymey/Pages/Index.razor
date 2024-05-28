@@ -1,8 +1,12 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @using SkymeyLib.Models.Crypto
 @using SkymeyLib.Models.Crypto.CryptoInstruments
+@using System.IdentityModel.Tokens.Jwt
 @inject IHttpService httpService
 @inject INameService nameSerivce
+@inject IJSRuntime js
+@inject ProtectedSessionStorage sessionStorage
 
 <PageTitle>@nameSerivce.Index | @nameSerivce.Title</PageTitle>
 
@@ -37,6 +41,36 @@
 }
 else
 {
+    if (Role == "2")
+    {
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#instrumentModal">
+            Add instrument
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="instrumentModal" tabindex="-1" aria-labelledby="instrumentModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="instrumentModalLabel">Add instrument</h5>
+                        <button type="button" class="btn-clos1e" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                    </div>
+                    <div class="modal-body">
+                        <label for="exampleFormControlInput1" class="form-label">Title:</label>
+                        <input type="text" id="exampleFormControlInput1" class="form-control" @bind="Title" @bind:event="oninput" placeholder="Title..." autocomplete="off" />
+                        
+                        <label for="exampleFormControlInput1" class="form-label">Ticker:</label>
+                        <input type="text" id="exampleFormControlInput2" class="form-control" @bind="Ticker" @bind:event="oninput" placeholder="Ticker..." autocomplete="off" />
+
+                        @* <label for="exampleFormControlInput2" class="form-label">Blockchain:</label> *@
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" @onclick="AddInstrument">Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
     <table class="table custom-table mt-4">
         <thead>
             <tr class="TickerTr">
@@ -96,6 +130,9 @@ else
 @code {
     private CryptoInstrumentsDB[]? crypto_tickers;
     private CryptoActualPricesView[]? crypto_prices;
+    private string? Role { get; set; } = "User";
+    private string? Title { get; set; } = default!;
+    private string? Ticker { get; set; } = default!;
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -104,7 +141,43 @@ else
             crypto_prices = await httpService.Get<CryptoActualPricesView[]>("https://localhost:5003/api/Crypto/GetActualPrices");
             crypto_tickers = (from i in crypto_tickers orderby i.Rank ascending select i).Skip(0).Take(100).ToArray();
             Console.WriteLine((from i in crypto_prices where i.Ticker == "LTC" + "USDT" select i.Price).FirstOrDefault());
+            var handler = new JwtSecurityTokenHandler();
+            try
+            {
+                var authHeader = await sessionStorage.GetAsync<string>("Token");
+                string? token = authHeader.Value;
+                if (token.Length != 0)
+                {
+                    Console.WriteLine("[" + token + "]5");
+                    var jsonToken = handler.ReadToken(token);
+                    var tokenS = handler.ReadToken(token) as JwtSecurityToken;
+                    Role = tokenS.Claims.First(claim => claim.Type == "Role").Value;
+                    Console.WriteLine(Role);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
             StateHasChanged();
         }
+    }
+
+    private async Task AddInstrument()
+    {
+        CryptoInstrumentsDB instrument = new CryptoInstrumentsDB();
+        instrument.CurrentSupply = "0";
+        instrument.FDV = "0";
+        instrument.Is_active = 1;
+        instrument.MaxSupply = "0";
+        instrument.Mcap = "0";
+        instrument.Name = Title;
+        instrument.Symbol = Ticker;
+        instrument.Rank = 0;
+        instrument.Slug = Title.Replace(" ", "-").ToLower();
+        instrument.Update = DateTime.UtcNow;
+        instrument.Platform = new PlatformDB();
+        await httpService.Post<CryptoInstrumentsDB>("https://localhost:5003/api/Crypto/AddInstruments/", instrument);
+        await js.InvokeVoidAsync("CloseModal", "#instrumentModal");
     }
 }

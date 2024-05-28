@@ -108,14 +108,6 @@
                         await localStorage.SetAsync("RefreshToken", _AuthenticationService.User.RefreshToken);
                         Console.WriteLine(_AuthenticationService.User.RefreshToken);
                         is_visible = "d-block";
-                        var handler = new JwtSecurityTokenHandler();
-                        var authHeader = await sessionStorage.GetAsync<string>("Token");
-                        
-                            Console.WriteLine("[" + authHeader.Value + "]3");
-                            var jsonToken = handler.ReadToken(authHeader.Value.ToString());
-                            var tokenS = handler.ReadToken(authHeader.Value.ToString()) as JwtSecurityToken;
-                            var id = tokenS.Claims.First(claim => claim.Type == "Role").Value;
-                            Console.WriteLine(id);
                         
                         StateHasChanged();
                     }
@@ -145,17 +137,7 @@
                 await sessionStorage.SetAsync("Token", _AuthenticationService.User.Token);
                 await localStorage.SetAsync("RefreshToken", _AuthenticationService.User.RefreshToken);
                 Console.WriteLine(_AuthenticationService.User.RefreshToken);
-                var handler = new JwtSecurityTokenHandler();
-                var authHeader = await sessionStorage.GetAsync<string>("Token");
-                if (authHeader.Success)
-                {
-                    Console.WriteLine("[" + authHeader + "]");
-                    var jsonToken = handler.ReadToken(authHeader.Value.ToString());
-                    var tokenS = handler.ReadToken(authHeader.Value.ToString()) as JwtSecurityToken;
-                    var id = tokenS.Claims.First(claim => claim.Type == "Role").Value;
-                
-                Console.WriteLine(id);
-                }
+
                 StateHasChanged();
             }
         }

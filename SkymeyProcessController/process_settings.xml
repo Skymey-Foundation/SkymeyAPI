@@ -3,21 +3,109 @@
 	<Processes>
 		<Process>
 			<Name>User service | 5000 | 5001</Name>
+			<Link>https://localhost:5001/swagger/index.html</Link>
 			<Directory>C:\Users\New\Desktop\Skymey\</Directory>
 			<FileName>SkymeyUserService.exe.lnk</FileName>
 			<Agruments></Agruments>
 		</Process>
 		<Process>
+			<Name>Crypto service | 5015 | 5016</Name>
+			<Link>https://localhost:5016/swagger/index.html</Link>
+			<Directory>C:\Users\New\Desktop\Skymey\</Directory>
+			<FileName>SkymeyCryptoService.exe.lnk</FileName>
+			<Agruments></Agruments>
+		</Process>
+		<Process>
 			<Name>Website | 5005 | 5006</Name>
+			<Link>https://localhost:5006</Link>
 			<Directory>C:\Users\New\Desktop\Skymey\</Directory>
 			<FileName>Skymey.exe.lnk</FileName>
 			<Agruments></Agruments>
 		</Process>
 		<Process>
 			<Name>Skymey API | 5002 | 5003</Name>
+			<Link>https://localhost:5003/swagger/index.html</Link>
 			<Directory>C:\Users\New\Desktop\Skymey\</Directory>
 			<FileName>SkymeyAPI.exe.lnk</FileName>
-			<Agruments></Agruments>	 
+			<Agruments></Agruments>
+		</Process>
+		<Process>
+			<Name>Blockchain JOB. Bitcoin. GetMiningInfo</Name>
+			<Directory>C:\Users\New\Desktop\Skymey\</Directory>
+			<FileName>SkymeyBlockchainBitcoin.exe.lnk</FileName>
+			<Agruments></Agruments>
+		</Process>
+		<Process>
+			<Name>CRYPTO JOB. Binance. Current prices</Name>
+			<Directory>C:\Users\New\Desktop\Skymey\</Directory>
+			<FileName>SkymeyBinanceActualPrices.exe.lnk</FileName>
+			<Agruments></Agruments>
+		</Process>
+		<Process>
+			<Name>CRYPTO JOB. Binance. Ticker list</Name>
+			<Directory>C:\Users\New\Desktop\Skymey\</Directory>
+			<FileName>SkymeyBinanceTickerList.exe.lnk</FileName>
+			<Agruments></Agruments>
+		</Process>
+		<Process>
+			<Name>CRYPTO JOB. Okex. Current prices</Name>
+			<Directory>C:\Users\New\Desktop\Skymey\</Directory>
+			<FileName>SkymeyOkexActualPrices.exe.lnk</FileName>
+			<Agruments></Agruments>
+		</Process>
+		<Process>
+			<Name>CRYPTO JOB. Okex. Ticker list</Name>
+			<Directory>C:\Users\New\Desktop\Skymey\</Directory>
+			<FileName>SkymeyOkexTickerList.exe.lnk</FileName>
+			<Agruments></Agruments>
+		</Process>
+		<Process>
+			<Name>CRYPTO JOB. CMC. Ticker list</Name>
+			<Directory>C:\Users\New\Desktop\Skymey\</Directory>
+			<FileName>SkymeyCMCInstruments.exe.lnk</FileName>
+			<Agruments></Agruments>
+		</Process>
+		<Process>
+			<Name>CRYPTO JOB. Blockchain. Ehereum. MaxSupply</Name>
+			<Directory>C:\Users\New\Desktop\Skymey\</Directory>
+			<FileName>SkymeyBlockchainEthereum.exe.lnk</FileName>
+			<Agruments></Agruments>
+		</Process>
+		<Process>
+			<Name>CRYPTO JOB. Blockchain. Moonbeam. MaxSupply</Name>
+			<Directory>C:\Users\New\Desktop\Skymey\</Directory>
+			<FileName>SkymeyBlockChainMoonbeam.exe.lnk</FileName>
+			<Agruments></Agruments>
+		</Process>
+		<Process>
+			<Name>STOCK JOB. Tinkoff. SharesList</Name>
+			<Directory>C:\Users\New\Desktop\Skymey\</Directory>
+			<FileName>SkymeyTinkoffSharesList.exe.lnk</FileName>
+			<Agruments></Agruments>
+		</Process>
+		<Process>
+			<Name>BOND JOB. Tinkoff. BondList</Name>
+			<Directory>C:\Users\New\Desktop\Skymey\</Directory>
+			<FileName>SkymeyTinkoffBondList.exe.lnk</FileName>
+			<Agruments></Agruments>
+		</Process>
+		<Process>
+			<Name>ETF JOB. Tinkoff. EtfList</Name>
+			<Directory>C:\Users\New\Desktop\Skymey\</Directory>
+			<FileName>SkymeyTinkoffEtfList.exe.lnk</FileName>
+			<Agruments></Agruments>
+		</Process>
+		<Process>
+			<Name>CURRENCIES JOB. Tinkoff. CurrenciesList</Name>
+			<Directory>C:\Users\New\Desktop\Skymey\</Directory>
+			<FileName>SkymeyTinkoffCurrencies.exe.lnk</FileName>
+			<Agruments></Agruments>
+		</Process>
+		<Process>
+			<Name>FUTURES JOB. Tinkoff. FuturesList</Name>
+			<Directory>C:\Users\New\Desktop\Skymey\</Directory>
+			<FileName>SkymeyTinkoffFutures.exe.lnk</FileName>
+			<Agruments></Agruments>
 		</Process>
 	</Processes>
 </starts>

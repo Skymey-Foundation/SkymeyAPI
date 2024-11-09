@@ -113,7 +113,7 @@ else
                     135324
                     </td>
                     <td>
-                    200000000
+                        @item.CurrentSupply
                     </td>
                     <td>
                     210000000
@@ -140,6 +140,10 @@ else
             crypto_tickers = await httpService.Get<CryptoInstrumentsDB[]>("https://localhost:5003/api/Crypto/GetInstruments");
             crypto_prices = await httpService.Get<CryptoActualPricesView[]>("https://localhost:5003/api/Crypto/GetActualPrices");
             crypto_tickers = (from i in crypto_tickers orderby i.Rank ascending select i).Skip(0).Take(100).ToArray();
+            foreach (var item in crypto_tickers)
+            {
+                Console.WriteLine(item.Name + " " + item.CurrentSupply);
+            }
             Console.WriteLine((from i in crypto_prices where i.Ticker == "LTC" + "USDT" select i.Price).FirstOrDefault());
             var handler = new JwtSecurityTokenHandler();
             try

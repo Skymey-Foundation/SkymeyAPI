@@ -54,7 +54,7 @@ namespace SkymeyCryptoService.Services.Crypto
             HashSet<CryptoInstrumentsDB> resp = new HashSet<CryptoInstrumentsDB>();
             foreach (var item in resp_mongo)
             {
-                resp.Add(new CryptoInstrumentsDB { Id = item.Id, Is_active = item.Is_active, Name = item.Name, Rank = item.Rank, Slug = item.Slug, Symbol = item.Symbol, Update = item.Update, Platform = item.Platform });
+                resp.Add(new CryptoInstrumentsDB { Id = item.Id, Is_active = item.Is_active, CurrentSupply = item.CurrentSupply, FDV = item.FDV,MaxSupply = item.MaxSupply,Mcap = item.Mcap, Name = item.Name, Rank = item.Rank, Slug = item.Slug, Symbol = item.Symbol, Update = item.Update, Platform = item.Platform });
             }
             return resp;
         }
